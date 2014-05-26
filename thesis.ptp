@@ -1,0 +1,7 @@
+# PCTeX Project File, Version 1.1
+	name: thesis
+	texformat: LATEX
+thesis.tex
+	wndpos: 1 -1 -1 -1 -1 0 0 670 436
+	zorder: 0
+thesis.dvi
