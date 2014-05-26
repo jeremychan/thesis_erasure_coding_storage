@@ -1,58 +1,227 @@
-%
-% chapter introduction
-
 \chapter{Introduction}
+\label{sec:introduction}
 
-\note{Summary}
-{
-Introduction comes here.
-}
+% why erasure coding
+Clustered storage systems are known to be susceptible to component failures
+\cite{ghemawat03}.  High data availability can be achieved by encoding data
+with redundancy using either replication or erasure coding.  Erasure coding
+encodes original data chunks to generate new parity chunks, such that a subset
+of data and parity chunks can sufficiently recover all original data chunks.
+It is known that erasure coding introduces less overhead in storage and write
+bandwidth than replication under the same fault tolerance
+\cite{weatherspoon02,rodrigues05}.  For example, traditional 3-way replication
+used in GFS \cite{ghemawat03} and Azure \cite{calder11} introduces 200\% of
+redundancy overhead, while erasure coding can reduce the overhead to 33\%
+and achieve higher availability \cite{huang12}.  Today's enterprise
+clustered storage systems
+\cite{welch08,ford10,huang12,sathiamoorthy13,resch11} adopt erasure coding in
+production to reduce hardware footprints and maintenance costs.
 
-This research...
+%While erasure coding is promising and sees practical deployment, existing
+%systems target specific domains of workloads and implementations, and several
+%design trade-off issues remain open.  Here, we identify three: 
+%\begin{itemize}
+%\item
+%{\bf Out-of-order versus inline erasure coding.}  Existing distributed file
+%systems perform {\em out-of-order} erasure coding
+%\cite{ford10,huang12,sathiamoorthy13}.  That is, data is first replicated, and
+%the replicas are later erasure-coded in the background.  However, the
+%out-of-order approach incurs extra I/Os since it first writes replicas and
+%then transforming them into erasure-coded data.  An alternative is to perform
+%inline erasure coding on the write path, but it degrades read performance
+%since read requests cannot be easily load balanced across multiple replicas as
+%in replication \cite{fan09}. 
+%\item
+% why write-many
+%{\bf Write-once versus write-many workloads.} Many distributed file systems
+%such as GFS \cite{ghemawat03}, HDFS \cite{shvachko10} and Azure \cite{huang12}
+%assume write-once-read-many (WORM) semantics on files, which become immutable
+%once closed.  This model is valid for cloud computing workloads, such as
+%MapReduce applications \cite{dean04}.  On the other hand, for many real-world
+%workloads in enterprise servers and network file systems
+%\cite{adams12,narayanan08}, data updates are common, and the
+%write-many-read-many (WMRM) semantics need to supported in the file system.
+%Erasure coding introduces high overhead in the WMRM model, since the 
+%{\em parity} chunks (i.e., chunks encoded from data) need to be
+%re-encoded for the data changes. 
+%Given the needs for a write-many inline erasure coding file system, we need
+%designs that provide update efficiency. Efficient update will decrease the
+%I/O latency and improve the overall application response time. 
+%\item
+%{\bf Out-of-order versus in-place updates.} 
+% why fast recovery
 
-Type your content here.
+For many real-world workloads in enterprise servers and network file systems
+\cite{adams12,narayanan08}, data updates are dominant.  There are two ways of
+performing updates: (1) {\em in-place updates}, where the stored data is read,
+modified, and written with the new data, and (2) {\em log-based updates},
+where updates are inserted to the end of an append-only log
+\cite{rosenblum92}.  If updates are frequent, in-place updates introduce
+significant I/O overhead in erasure-coded storage since parity chunks also
+need to be updated to be consistent with the data changes.  Existing
+clustered storage systems, such as GFS \cite{ghemawat03} and Azure 
+\cite{calder11} adopt log-based updates to reduce I/Os by sequentially
+appending updates.  On the other hand, log-based updates introduce additional
+disk seeks to the update log during sequential reads.  This in particular
+hurts recovery performance, since recovery makes large sequential reads to the
+data and parity chunks in the surviving nodes in order to reconstruct the lost
+data. 
+%The issue becomes more severe for erasure-coded storage, because the updates
+%must be first read and reassembled from different coded chunks before the
+%lost data can be reconstructed. 
 
-Type your content here.
+This raises an issue of choosing the appropriate update scheme for an
+erasure-coded clustered storage system to achieve efficient updates and
+recovery simultaneously.  Our primary goal is to mitigate the network transfer
+and disk I/O overheads, both of which are potential bottlenecks in clustered
+storage systems.  In this paper, we make the following contributions.
 
-Type your content here.
+%However, such approach generates disk seeks for both data and parity blocks
+%during update, which does not meet the update efficiency that we require in
+%our inline erasure coding system.
+%On the other hand, recovery time plays in significant role in deciding the
+%availability and reliability of a distributed file system. Longer recovery
+%time prolongs the "window of vulnerability" of an erasure coding system,
+%during which another node failure will render irrecoverable data loss
+%\cite{xin03}. During recovery, large sequential reads are issued to both data
+%and parity blocks in the surviving nodes in order to reconstruct the lost
+%blocks. 
+%\end{itemize}
 
-Type your content here.
+% contributions
 
-Type your content here.
+%First, we conduct trace analysis on real-world traces from production storage
+%servers.  We characterize the update behaviors of the traces that drive our
+%work. 
 
-Type your content here.
+First, we provide a taxonomy of existing update schemes for
+erasure-coded clustered storage systems.  To this end, we propose a novel
+update scheme called {\em parity logging with reserved space}, which
+uses a hybrid of in-place data updates and log-based parity updates.  It
+mitigates the disk seeks of reading parity chunks by putting deltas of parity
+chunks in a reserved space that is allocated next to their parity chunks.  We
+further propose a workload-aware reserved space management scheme that
+effectively predicts the size of reserved space and reclaims the unused
+reserved space. 
 
-Type your content here.
+Second, we build an erasure-coded clustered storage system {\em CodFS}, which
+targets the common update-dominant workloads and supports efficient updates
+and recovery.   CodFS offloads client-side encoding computations to the
+storage cluster.  
+%Specifically, a CodFS client distributes data across multiple storage nodes,
+%each of which encodes the received data, and then serializes and
+%re-distributes the encoded data to other storage nodes.  
+Its implementation is extensible for different erasure coding and update
+schemes, and is deployable on commodity hardware. 
 
-Type your content here.
+Finally, we conduct testbed experiments using synthetic and real-world traces.
+We show that our CodFS prototype achieves network-bound read/write
+performance.  Under real-world workloads, our proposed parity logging with
+reserved space gives a ${63.1}\%$ speedup of update throughput over pure
+in-place updates and up to ${10\times}$ speedup of recovery throughput over
+pure log-based updates.  Also, our workload-aware reserved space management
+effectively shrinks unused reserved space with limited reclaim overhead. 
 
-Type your content here.
+%We assign a primary OSD which handles encoding and chunk distribution for
+%each segment. Our scalable design offloads client-side encoding computations
+%to the distributed file system. We minimize the network traffic for parity
+%updates by calculating a {\em parity delta} which can be used to reconstruct
+%the parity chunk during degraded read and recovery.  CodFS implements
+%different delta-based parity update schemes. 
 
-Type your content here.
 
-Type your content here.
+%Second, we design a set of storage schemes for the data and parity chunks. We
+%show that although a traditional log-structured file system, which we name it
+%the \textit{full-logging} performs well in updates, it suffers from poor
+%sequential read performance and slow recovery compared with the other
+%schemes. The previously proposed \textit{parity-logging} (\PL) scheme is a
+%hybrid method that sits between the \FL scheme the \textit{full-overwrite}
+%(\FO) scheme. We show that the \PL scheme is comparable with the \FL scheme
+%in updates but performs significantly better in sequential read. Based on the
+%\PL scheme, we proposed the \textit{parity-logging with reserved space}
+%(\PLR) scheme which keeps the parity deltas close to the parity chunks. This
+%further improves the recovery throughput by reducing the number of disk
+%seeks. We also describe heuristics for limiting the size of reserved space by
+%shrinking and merging.
 
-Type your content here.
+%Third, we incorporate end-to-end integrity into our design by computing and
+%verifying checksums in the primary OSD. The checksum ensures that corrupt data
+%never reaches the clients and redundancy provided by erasure coding can be used
+%to recover corrupt data upon detection. We showed that CRC using Intel SSE4.2
+%instruction set introduces negligible overhead. We also show that we can apply
+%the storage schemes used in normal blocks to checksum blocks to improve overall
+%I/O performance.
 
-Type your content here.
+%Organization
+The rest of the paper proceeds as follows. In \S\ref{sec:trace}, we analyze
+the update behaviors in real-world traces.  In \S\ref{sec:background}, we
+introduce the background of erasure coding. In \S\ref{sec:parity}, we present
+different update schemes and describe our approach. In
+\S\ref{sec:design}, we present the design of CodFS.  In
+\S\ref{sec:evaluation}, we present testbed experimental results. 
+In \S\ref{sec:relatedwork}, we discuss related work.
+In \S\ref{sec:conclusion}, we conclude the paper.
 
-Type your content here.
+%%%%%%%%%%%%%%%%%
+%%% OLD DRAFT %%%
+%%%%%%%%%%%%%%%%%
 
-Type your content here.
+% why checksum
+%Redundancy provided by erasure coded storage is only useful when faults can
+%actually be detected. Storage systems designers have long assumed that disks
+%operate in a fail-stop manner \red{cite}. Indeed, recent studies have shown
+%that disk drives can exhibit silent data corruptions caused by a variety of
+%reasons including torn writes, missed writes and misdirected writes \red{cite}.
+%Enterprise distributed file systems including GFS \cite{ghemawat03}, HDFS
+%\cite{shvachko10} and Panasas \red{cite} provide end-to-end integrity by
+%storing checksums alongside the data. When reading data, integrity is checked by
+%comparing the calculated checksum with the stored ones. In addition to data
+%blocks, parity blocks also need to be protected in an erasure coding system.
+%Otherwise, an undetectable data corruption may occur when we try to reconstruct
+%data from corrupted parity blocks. The scenario becomes more complex when data
+%modification is allowed. Since parity blocks are frequently updated, system
+%performance may suffer a tremendous impact by disk seeks if checksums are not carefully
+%placed.
 
-Type your content here.
-
-Type your content here.
-
-Type your content here.
-
-Type your content here.
-
-Type your content here.
-
-Type your content here.
-
-This is a new page.
-
-\chapterend
-
+%Motivations
+%\begin{itemize}
+%    \item Erasure coded storage saves both bandwidth and storage overhead than
+%        replication.
+%    \item We prefer performing online erasure coding on the write path (online erasure
+%         coding) as 1) it
+%         minimize the network traffic during write and 2) eliminates redundant
+%         traffic when transforming replicated blocks to erasure coding.
+%    \item Many erasure coding systems (e.g. Windows Azure Storage and HDFS-RAID)
+%         assumes a write-once-read-many model. Parity blocks are computed once
+%         the corresponding data blocks are sealed and they are never updated
+%         afterwards. Although this workload assumption makes the implementation
+%         of an erasure-coding system straight forward, we observe write-many
+%         (in-place update) model in real workloads.  Therefore, we implement a
+%         distributed erasure coding system that can handle updates and propose a
+%         design which does this in an efficient manner.
+%    \item One way to implement inline erasure coding in distributed storage is
+%         described in Zebra \cite{hartman95}, by logging updates into segment
+%         and perform coding once the segment is full. The advantage of this
+%         approach is that by introducing a layer of abstraction (segment-based),
+%         old data blocks do not need to be read when there is an update. Parity
+%         blocks are always computed over a logical segment. However, during read
+%         we need to decode multiple fragments to reconstruct the original
+%         segment. This not only introduces fragmentation (seeking overheads) in
+%         the OSD storage, but also garbage collection which is a significant
+%         performance killer. Therefore, we prefer in-place erasure coding (Note
+%         that online means we perform coding on the write path. In-place means that
+%         we write the updated blocks at the original location). 
+%    \item Perform erasure codes on write path for updates is slower than replication, (RMW, RCW).
+%        So we propose the hybrid update model, i.e. in-place for data block and
+%        append for parity. The justification is that parity blocks are rarely
+%        read, normal read performance is not suffered from fragmentation. By
+%        using this model, we don't need the turning point between RMW and RCW.
+%    \item Erasure coding protects complete node failures but does not ensure the
+%         integrity of the blocks. A reliable system detects block corruption
+%         using checksum and never returns corrupted data to the client. In an
+%         erasure coding system, such detection can also be used to trigger
+%         recovery from parity blocks. Implementing end-to-end integrity using
+%         checksum is trivial in a write-once systems that does not update parity
+%         blocks. We propose a practical implementation of end-to-end
+%         integrity in an inline erasure coding system.
+%\end{itemize}

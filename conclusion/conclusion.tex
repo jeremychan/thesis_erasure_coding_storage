@@ -1,14 +1,15 @@
-%
-% chapter conclusion
+\chapter{Conclusions}
+\label{sec:conclusion}
 
-\chapter{Conclusion}
-
-\note{Summary}
-{
-Conclusion comes here.
-}
-
-In conclusion, ...
-
-\chapterend
-
+Our key contribution is the parity logging with reserved space (\PLR) scheme,
+which keeps parity updates next to the parity chunk to mitigate disk seeks. We
+also propose a workload-aware scheme to predict and adjust the reserved space
+size.  To this end, we build CodFS, an erasure-coded clustered storage system
+that achieves efficient updates and recovery.  We evaluate our CodFS prototype
+using both synthetic and real-world traces and show that \PLR improves update
+and recovery performance over pure in-place and log-based updates.  In future
+work, we plan to (1) evaluate other metrics (e.g., latency) of different parity
+update schemes, (2) evaluate the impact of the shrinking and merging
+operations on throughput and latency, and (3) explore a more robust design of
+reserved space management.  The source code of CodFS is available for
+public-domain use on {\bf http://ansrlab.cse.cuhk.edu.hk/software/codfs}. 

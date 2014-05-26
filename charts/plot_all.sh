@@ -1,0 +1,13 @@
+#!/bin/bash
+(cd seq_write; ./plot.gnu)
+(cd seq_read; ./plot.gnu)
+(cd rand_write; ./plot.gnu)
+(cd recovery; ./plot.gnu)
+(cd msr_update; ./plot.gnu)
+(cd msr_recovery; ./plot.gnu)
+(cd msr_dist; ./plot.gnu)
+(cd harvard_ratio; ./plot.gnu)
+(cd harvard_merge; ./plot.gnu)
+(cd transfer; ./plot_up.sh)
+(cd transfer; ./plot_down.sh)
+(cd reserve_overhead; ./plot.sh)

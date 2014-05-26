@@ -1,9 +1,6 @@
-#!gmake
-
 # add the required target .tex files below
 SRC  =
 SRC += thesis.tex
-
 default:	thesis.dvi
 
 thesis.dvi:	thesis.tex
@@ -39,7 +36,7 @@ realclean:      clean
 	echo make $*.dvi done!
 
 .tex.dvi:
-	latex $<
+	xelatex $<
 	# bibtex plus "et al. correction" for some bibliography style
 	# the minus sign avoids error stopping when no citation encountered
 	-bibtex $*
@@ -48,7 +45,7 @@ realclean:      clean
 	# latex several rounds until no dangling reference
 	-logfile=$*.log; \
 	while [ "x`egrep 'undefined references|Rerun' $${logfile}`" != "x" ]; \
-		do latex $<; \
+		do xelatex $<; \
 	done
 	echo make $*.dvi done!
 
