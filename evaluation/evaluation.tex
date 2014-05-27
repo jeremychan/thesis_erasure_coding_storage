@@ -1,5 +1,5 @@
 \chapter{Evaluation}
-\label{sec:evaluation}
+\label{chap:evaluation}
 
 We evaluate different parity update schemes through our CodFS prototype. We
 deploy CodFS on a testbed with 22 nodes of commodity hardware configurations.
@@ -24,30 +24,24 @@ switch.
      \label{fig:rdp_write}
  \end{subfigure}
  \hspace{0.005\linewidth}
- %\begin{subfigure}{0.48\linewidth}
- %    \includegraphics[width=\linewidth]{charts/transfer/eps/up/rs_6}
- %    \caption{RS write}
- %    \label{fig:rs_write}
- %\end{subfigure}
+ \begin{subfigure}{0.48\linewidth}
+     \includegraphics[width=\linewidth]{charts/transfer/eps/up/rs_6}
+     \caption{RS write}
+     \label{fig:rs_write}
+ \end{subfigure}
  \begin{subfigure}{0.48\linewidth}
      \includegraphics[width=\linewidth]{charts/transfer/eps/down/rdp_6}
      \caption{Sequential read}
      \label{fig:rdp_read}
  \end{subfigure}
  \hspace{0.005\linewidth}
- %\begin{subfigure}{0.48\linewidth}
- %    \includegraphics[width=\linewidth]{charts/transfer/eps/down/rs_6}
- %    \caption{RS read}
- %    \label{fig:rs_read}
- %\end{subfigure}
- % Compress caption spacing
- \setlength\abovecaptionskip{4pt minus 2pt}
- \setlength\belowcaptionskip{-4pt minus 1pt}
+ \begin{subfigure}{0.48\linewidth}
+     \includegraphics[width=\linewidth]{charts/transfer/eps/down/rs_6}
+     \caption{RS read}
+     \label{fig:rs_read}
+ \end{subfigure}
  \caption{Aggregate read/write throughput of CodFS using the RDP code with
 	 $(n,k)=(6,4)$.}
- % Reset caption spacing
- \setlength\abovecaptionskip{10pt}
- \setlength\belowcaptionskip{0pt}
  \label{fig:data}
 % \vspace{-5pt}
 \end{figure}
@@ -63,7 +57,7 @@ We define the notation as follows.  Let $M$ be the total number of OSDs in the
 system, and let $B_{in}$ and $B_{out}$ be the available inbound and outbound
 bandwidths (in network or disk) of each OSD, respectively.  Each encoding scheme
 can be described by the parameters $n$ and $k$, following the same definitions
-in \S\ref{sec:background}.  
+in \S\ref{sec:ec_background}.  
 %To encode a segment, we divide it into $k$ chunks of the same size and encode
 %the $k$ chunks into $n$ chunks, such that any $k$ out of $n$ chunks can be used
 %to reconstruct the original segment. 
@@ -96,8 +90,10 @@ measurements on our testbed and find that the effective disk and network
 bandwidths of each node are 144MB/s and 114.5MB/s, respectively.  Thus,
 the nodes are network-bound, and we set $B_{in}\!=\!B_{out}\!=$ 114.5MB/s in
 our model.  We configure CodFS with one node as the MDS and $M$ nodes as OSDs,
-where $6\!\le\!M\!\le\!10$.  We consider the RAID-6 RDP code \cite{corbett04}
-with $(n,k) = (6,4)$.  The coded chunks are distributed over the $M$ OSDs.  We
+where $6\!\le\!M\!\le\!10$.  We consider the RAID-6 Reed-Solomon (RS)
+\cite{reed60} and RDP
+code \cite{corbett04} with $(n,k) = (6,4)$.  The coded chunks are distributed
+over the $M$ OSDs.  We
 have 10 other nodes in the testbed as clients that transfer streams of
 segments simultaneously. 
 
@@ -108,12 +104,9 @@ throughput scales linearly with the number of OSDs.  For example, when $M=10$
 OSDs are used, CodFS achieves read and write throughput of at least 580MB/s
 and 450MB/s, respectively.  
 
-We also evaluate the throughput results of CodFS configured with the
-Reed-Solomon (RS) codes \cite{reed60}.   We observe that both RDP and RS codes
-have almost identical throughput, although RS codes have higher encoding
-overhead \cite{plank09}.  The reason is that CodFS masks the encoding overhead
-through parallelization.  We do not present the results here in the interest
-of space. 
+We observe that both RDP and RS codes have almost identical throughput, although
+RS codes have higher encoding overhead \cite{plank09}.  The reason is that CodFS
+masks the encoding overhead through parallelization. 
 
 \section{Evaluation on Synthetic Workload}
 \label{eval:synthetic}
@@ -140,13 +133,7 @@ of space.
      \caption{Recovery}
 	 \label{fig:recovery}
  \end{subfigure}
- % Compress caption spacing
- \setlength\abovecaptionskip{4pt minus 2pt}
- \setlength\belowcaptionskip{-8pt minus 1pt}
  \caption{Throughput of CodFS under different update schemes.}
- % Reset caption spacing
- \setlength\abovecaptionskip{10pt}
- \setlength\belowcaptionskip{0pt}
  \label{fig:update_schemes}
 \end{figure}
 
@@ -172,7 +159,7 @@ updates to parity chunks than in RS codes (see \cite{plank13} for illustration),
 and hence generates larger-size parity deltas.  This triggers more frequent
 merge operations as the reserved space becomes full faster. 
 
-\subsubsection{Sequential Write Performance}
+\subsection{Sequential Write Performance}
 \label{eval:seq_write}
 
 Figure~\ref{fig:seq_write} shows the aggregate sequential write throughput of
@@ -181,7 +168,7 @@ write 2GB of segments to the storage cluster.  As expected, there is only
 negligible difference in sequential write throughput among the four update
 schemes as the experiment only writes new data.
 
-\subsubsection{Random Write Performance}
+\subsection{Random Write Performance}
 \label{eval:rand_write}
 
 We use IOzone to simulate intensive small updates, in which we issue uniform
@@ -219,7 +206,7 @@ than ${4.1}\%$ difference in IOPS.
 
 %\paragraph{Level of Disk Fragmentation.} 
 
-\subsubsection{Sequential Read Performance} 
+\subsection{Sequential Read Performance} 
 \label{eval:seq_read} 
 
 Sequential read and recovery performance are affected by disk fragmentation in data and parity
@@ -242,10 +229,7 @@ lengths.  We then take the average over the chunks in all OSDs.
 %to isolate such overhead when we compare recovery throughput between the \PLR
 %scheme and the \FO scheme.  
 
-% Compress caption spacing
-\setlength\abovecaptionskip{6pt minus 2pt}
-\setlength\belowcaptionskip{-8pt minus 1pt}
-\begin{table}[t] \footnotesize
+\begin{table}[t]
   \centering
         \begin{tabular}{ccrrrr}
         \toprule
@@ -258,9 +242,6 @@ lengths.  We then take the average over the chunks in all OSDs.
             ($F_{avg}$) after random writes for synthetic workload.}
   \label{table:synthetic_fragmentation}%
 \end{table}%
-% Reset caption spacing
-\setlength\abovecaptionskip{10pt}
-\setlength\belowcaptionskip{0pt}
 
 Table~\ref{table:synthetic_fragmentation} shows the value of $F_{avg}$
 measured after random writes in \S\ref{eval:rand_write}.  Both \FO and \PLR have $F_{avg} = 0$
@@ -294,7 +275,7 @@ also agrees with the measured level of disk fragmentation shown in
 Table~\ref{table:synthetic_fragmentation} where \FL is the only scheme that
 contains non-contiguous fragments for data chunks.
 
-\subsubsection{Recovery Performance}
+\subsection{Recovery Performance}
 \label{eval:recovery}
 
 %Another reason is that logging parity updates has a
@@ -318,7 +299,7 @@ of \PLR for keeping delta updates next to their parity chunks.  \PLR
 gains a ${3\times}$ improvement on average in recovery throughput when
 compared with \PL.
 
-\subsubsection{Reserved Space versus Update Efficiency}
+\subsection{Reserved Space versus Update Efficiency}
 \label{eval:reserve_comparison}
 
 We thus far evaluate the parity update schemes under the same coding
@@ -350,8 +331,8 @@ recovery throughput than \FL and \PL.
 \begin{figure}[!t]
 \centering
 \begin{tabular}{c@{\ }c}
-\includegraphics[width=1.5in]{charts/reserve_overhead/eps/reserve_overhead_randw} & 
-\includegraphics[width=1.5in]{charts/reserve_overhead/eps/reserve_overhead_recover}
+\includegraphics[width=0.48\linewidth]{charts/reserve_overhead/eps/reserve_overhead_randw} & 
+\includegraphics[width=0.48\linewidth]{charts/reserve_overhead/eps/reserve_overhead_recover}
 \vspace{-3pt}\\
 \mbox{\small (a) Random write} &
 \mbox{\small (b) Recovery}
@@ -363,7 +344,7 @@ recovery throughput than \FL and \PL.
 \vspace{-6pt}
 \end{figure}
 
-\subsubsection{Summary of Results}
+\subsection{Summary of Results}
 
 We make the following observations from our synthetic evaluation.
 First, although our configuration has twice as many data chunks as
@@ -453,7 +434,7 @@ that cover the whole working set size of the trace.  Each client then replays
 the trace by writing to the corresponding offset of the preallocated segments.
 We use RDP \cite{corbett04} with $(n,k)=(6,4)$ and 16MB segment size. 
 
-\paragraph{Update Performance.} Figure~\ref{fig:msr_update} shows the aggregate
+\subsection{Update Performance.} Figure~\ref{fig:msr_update} shows the aggregate
 number of writes replayed per second. To perform a stress test, we ignore the
 original timestamps in the traces and replay the operations as fast as possible.
 First, we observe that
@@ -490,7 +471,7 @@ average, \PLR is ${63.1}\%$ faster than \FO.
     \label{fig:msr_recovery}
 \end{figure}
 
-\paragraph{Recovery Performance.} Figure~\ref{fig:msr_recovery} shows the
+\subsection{Recovery Performance.} Figure~\ref{fig:msr_recovery} shows the
 recovery throughput in a two-node failure scenario. We see that in all traces,
 \FL and \PL are slower than \FO and \PLR in recovery.   Also, \PLR outperforms
 \FL and \PL more significantly in traces where there is a large number of
@@ -502,7 +483,7 @@ throughput over \FL.  On the other hand, \PLR performs the worst in the
 parity chunks, respectively.  Nevertheless, it still manages to give an
 ${11.7}\%$ speedup over \FL.
 
-\subsubsection{Evaluation of Reserved Space}
+\subsection{Evaluation of Reserved Space}
 \label{eval:reserve_evaluation}
 
 We evaluate our workload-aware approach in managing the
@@ -561,7 +542,9 @@ factor $\alpha = 0.3$.
 %deltas  after shrinking the
 %reserved space of each parity chunk.
 
-\paragraph{Simulation Results.} Figure~\ref{fig:harvard_ratio} shows the value
+\subsubsection{Simulation Results} 
+
+Figure~\ref{fig:harvard_ratio} shows the value
 of $\Gamma$ under the three different approaches by simulating the 41-day
 Harvard traces.  The 2MB, 8MB, and 16MB baseline approaches give 
 $\Gamma=0.2$, $0.8$, and $1.6$, respectively, throughout the entire trace
@@ -638,7 +621,7 @@ is very little impact of merging on the performance in \PLR.
 %\PLRis only slightly worse than \FO. To summarize, our design
 %achieves update efficiency without compromising recovery performance. 
 
-\subsubsection{Summary of Results}
+\subsection{Summary of Results}
 
 We show that \PLR achieves efficient updates and recovery.  It significantly
 improves the update throughput of \FO and the recovery throughput of \FL. 
@@ -649,7 +632,3 @@ slight merging penalty to reclaim space.
 %Here, we only propose a simple
 %heuristic for reserved space management.  We pose the design of more advanced
 %algorithms as future work.
-
-% Reset caption spacing
-\setlength\abovecaptionskip{10pt}
-\setlength\belowcaptionskip{0pt}

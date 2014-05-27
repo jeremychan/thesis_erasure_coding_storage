@@ -55,7 +55,7 @@
 \def\abstractpage{
         \addcontentsline{toc}{chapter}{Abstract}
 
-	\vspace*{2cm}
+	%\vspace*{2cm}
 	\large \noindent
 	Abstract of thesis entitled: \\
 	\indent \thesistitle \\
@@ -66,6 +66,8 @@
 	\vskip 1cm \noindent
 	\input{abstract.tex}
     \newpage
+
+    \chapter*{摘要}
 	\input{chinabstract.tex}
 	\newpage
 }
@@ -78,6 +80,16 @@
 
         \addcontentsline{toc}{chapter}{Acknowledgement}
         \input{acknowledgement.tex}
+	\newpage
+}
+
+%=======================================================
+
+\def\publicationpage{%
+        \chapter*{List of Publications}
+
+        \addcontentsline{toc}{chapter}{List of Publications}
+        \input{publication.tex}
 	\newpage
 }
 

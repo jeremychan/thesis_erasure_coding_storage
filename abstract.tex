@@ -14,3 +14,13 @@ update schemes under synthetic and real-world workloads.  We show that
 our proposed update scheme achieves high update and recovery
 performance, which cannot be simultaneously achieved by pure in-place or
 log-based update schemes.
+
+In addition to clustered storage, we also study the issue of small random 
+writes in the context of an SSD RAID. In the second part of this thesis, 
+we propose TWEEN, a middleware application that aims toward write efficiency 
+and endurance of SSD RAID.  It comprises two key design features: 
+(1) it combines the log-structured file system (LFS) and byte-addressable 
+non-volatile RAM (NVRAM) to eliminate partial writes at both SSD and RAID 
+levels, and (2) it mitigates the garbage collection overhead in LFS by 
+grouping writes with similar update frequencies and absorbing LFS 
+garbage collection writes in NVRAM. 

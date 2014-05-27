@@ -6,3 +6,10 @@
 *.log
 *.pdf
 *.ps
+*.lof
+*.loc
+*.toc
+*.lot
+*.glo
+*.idx
+*.xdv

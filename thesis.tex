@@ -24,17 +24,22 @@
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 \providecommand{\SetAlgoLined}{\SetLine}
 \providecommand{\DontPrintSemicolon}{\dontprintsemicolon}
-
+% for units
+\usepackage[binary-units]{siunitx}
+\DeclareSIUnit{\GBps}{GB\per\second}
+\DeclareSIUnit{\MBps}{MB\per\second}
+\newcommand{\tuple}[1]{\ensuremath{\left \langle #1 \right \rangle }}
+% change section header font size
+\usepackage{titlesec}
+\titleformat*{\subsubsection}{\large\bfseries}
+\titleformat*{\paragraph}{\large\bfseries}
+% for chinese
 \usepackage{fontspec} 
 \usepackage{xeCJK} 
 \XeTeXlinebreaklocale "zh" 
 \XeTeXlinebreakskip = 0pt plus 1pt 
-%Select fonts
 \setmainfont[Mapping=tex-text]{Times New Roman} % rm
-\setsansfont[Mapping=tex-text]{Arial}           % sf
-\setmonofont{Courier New}                       % tt
-\setCJKmainfont{DFKai-SB} %xelatex 標楷體
-\setCJKmonofont{MingLiU}  %xelatex 細明體
+\setCJKmainfont{MingLiU}  %xelatex 細明體
 
 \newcommand\FL{\textsf{FL}\xspace}
 \newcommand\FO{\textsf{FO}\xspace}
@@ -46,6 +51,8 @@
 \textheight    21cm
 %\renewcommand{\arraystretch}{1.2}
 
+\newcommand\red[1]{\textcolor{red}{#1}}
+
 %=======================================================
 \begin{document}
 
@@ -54,7 +61,7 @@
 
 %cover page information
 
-\thesistitle{Enabling High-Performance of Distributed Storage Systems via Workload-aware Design}
+\thesistitle{Enabling High-Performance of Storage Systems via Workload-aware Design}
 \authorname{CHAN, Chun Wing}
 \degree{Master of Philosophy}
 \programme{Computer Science and Engineering}
@@ -76,6 +83,12 @@
 %acknowledgement
 
 \acknowledgementpage
+
+%=======================================================
+
+%publications
+
+\publicationpage
 
 %=======================================================
 
@@ -107,13 +120,14 @@
 %insert the chapters
 
 \input ./introduction/introduction.tex
-\input ./background/background.tex
-\input ./background/relatedwork.tex
-\input ./trace/trace.tex
+\input ./relatedwork/relatedwork.tex
+\input ./background/ec_background.tex
+\input ./background/trace.tex
 \input ./design/parity.tex
-\input ./design/design.tex
-\input ./implementation/implementation.tex
+\input ./design/codfs.tex
+\input ./design/implementation.tex
 \input ./evaluation/evaluation.tex
+\input ./tween/tween.tex
 \input ./conclusion/conclusion.tex
 
 

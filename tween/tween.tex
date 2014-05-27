@@ -2,9 +2,21 @@
 \chaptermark{TWEEN}
 \label{chap:tween}
 
-\section{Introduction}
+\section{Overview}
 
 \input{./tween/problem_motivation.tex}
 \input{./tween/design.tex}
 
 \section{Summary}
+
+We propose TWEEN, a middleware application designed to enhance the write
+efficiency and endurance of SSD RAID. TWEEN has several design goals: (1)
+write efficiency and endurance, (2) metadata efficiency, (3) data availability
+and (4) compatibility with off-the-shelf solutions. TWEEN utilizes the
+emerging NVRAM technology as non-volatile cache.  It combines the
+log-structured file system (LFS) and NVRAM to batch incoming partial writes
+and flush them to SSD RAID as full-stripe writes.  It also exploits workload
+characteristics to reduce LFS garbage collection overhead.  TWEEN is a
+user-space application and works seamlessly with off-the-shelf SSD RAID
+solutions. Our design speeds up random writes, lowers SSD garbage collection 
+overhead, and extends SSD lifetime.
