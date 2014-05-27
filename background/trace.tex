@@ -1,5 +1,5 @@
 
-\subsection{Update Behavior in Real-world Workload} 
+\section{Update Behavior in Real-world Workload} 
 \label{sec:trace}
 
 We study two sets of real-world storage traces collected from large-scale
@@ -19,9 +19,9 @@ some particular chunks?}
 %systems nowadays, we justify the needs for data update support by analysing
 %real-world traces collected in research and academic institutes.
 
-\subsubsection{Trace Description}
+\subsection{Trace Description}
 
-\paragraph{MSR Cambridge traces.} We use the public block-level
+\subsubsection{MSR Cambridge traces.} We use the public block-level
 I/O traces of a storage cluster released by Microsoft Research Cambridge
 \cite{narayanan08}. The traces are captured %below the file system cache 
 on 36 volumes of 179 disks located in 13 servers.  They are composed
@@ -37,7 +37,7 @@ Each of the chosen volumes contains 800,000 to 4,000,000 write requests.
 %chosen for evaluation.  In our technical report [CITE], we present a full
 %summary of analysis for all 36 volumes.
 
-\paragraph{Harvard NFS traces.}  We also use a set of NFS traces
+\subsubsection{Harvard NFS traces.}  We also use a set of NFS traces
 (\texttt{DEAS03}) released by Harvard \cite{ellard04}.  The traces capture NFS
 requests and responses of a NetApp file server 
 %that serves home directories for Harvard's Division of Engineering and
@@ -151,7 +151,7 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
 %to drive our work.
 %We study the traces and characterize the following update behaviors. 
 
-\paragraph{Updates are small.}  We study the update size, i.e., the number of
+\subsubsection{Updates are small}  We study the update size, i.e., the number of
 bytes accessed by each update.  Figure~\ref{fig:msr_dist} shows the average
 update size ranges of the MSR Cambridge traces.  We see that the updates are
 generally small in size. Although different traces show different
@@ -160,7 +160,7 @@ update size compositions, almost all updates occurring in the traces are smaller
 smaller than 4KB. Similarly, the Harvard NFS traces comprise small updates,
 with average size of only 10.58KB, as shown in Table~\ref{table:harvard}.
 
-\paragraph{Updates are common.} Unsurprisingly, updates are common in both
+\subsubsection{Updates are common} Unsurprisingly, updates are common in both
 storage traces.  We analyze the write requests in the traces and classify them
 into two types: {\em first-write}, i.e., the address is first accessed, and
 {\em update}, i.e., the address is re-accessed.  Table~\ref{table:harvard}
@@ -176,7 +176,7 @@ have much more writes than those with large WSS, such as the project volumes.
 
 %Also, $12.10\%$ of the files in the Harvard trace are updated at least once.
 
-\paragraph{Update coverage varies.} Although data updates are common in all
+\subsubsection{Update coverage varies} Although data updates are common in all
 traces, the coverage of updates varies. %from trace to trace.
 We measure the update coverage by studying the fraction of WSS that is updated
 at least once throughout the trace period. For example, from the MSR Cambridge

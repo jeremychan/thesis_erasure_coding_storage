@@ -5,23 +5,38 @@
 
 Quantitative analysis shows that erasure coding consumes less bandwidth and
 storage than replication with similar system durability
-\cite{weatherspoon02,rodrigues05}.  Several studies adopt erasure coding in
+\cite{weatherspoon02,rodrigues05}.  
+
+Several studies adopt erasure coding in
 distributed storage systems.  OceanStore \cite{kubiatowicz00,rhea03} combines
-replication and erasure coding for wide-area network storage.  TotalRecall
+replication and erasure coding for wide-area network storage.  
+
+TotalRecall
 \cite{bhagwan04} applies replication or erasure coding to different files
-dynamically according to the availability level predicted by the system.  Ursa
-Minor \cite{abd05} focuses on cluster storage and encodes files of
-heterogeneous types based on the failure models and access patterns.  Panasas
-\cite{welch08} performs client-side encoding on a per-file basis. 
+dynamically according to the availability level predicted by the system.  
+
+Ursa Minor \cite{abd05} focuses on cluster storage and encodes files of
+heterogeneous types based on the failure models and access patterns.  
+
+Panasas \cite{welch08} performs client-side encoding on a per-file basis. 
+
 TickerTAIP \cite{cao94}, PARAID \cite{weddle07} and Pergamum \cite{storer08}
 offload the parity computation to the storage array.
-%R-Admad~\cite{liu09} enhances the reliability of a deduplication
-%system by adopting erasure coding to store deduplicated data.  
-%CAROM \cite{ma13} uses replication for caching in its erasure coded
-%distributed storage system so as to benefit high throughput from replicated
-%cache and low storage overhead from erasure-coded data. 
+
+R-Admad \cite{liu09} enhances the reliability of a deduplication
+system by adopting erasure coding to store deduplicated data.  
+
+CAROM \cite{ma13} uses replication for caching in its erasure coded distributed
+storage system so as to benefit high throughput from replicated cache and low
+storage overhead from erasure-coded data. It redirects all writes to a primary
+replica to ensure cache consistency. 
+
 Azure \cite{huang12} and Facebook \cite{sathiamoorthy13} propose efficient
 erasure coding schemes to speed up degraded reads. 
+
+Zhang \etal \cite{zhang10} modify HDFS with inline erasure coding and
+evaluate different workloads atop erasure-coded data.
+
 % But they perform coding off the write path by first performing replication
 % and later transforming replicas into their erasure-coded form. 
 We complement the above studies by improving update efficiency and recovery
