@@ -1,0 +1,197 @@
+
+\subsection{Update Behavior in Real-world Workload} 
+\label{sec:trace}
+
+We study two sets of real-world storage traces collected from large-scale
+storage server environments and characterize their update patterns.  Motivated
+by the fact that enterprises are considering erasure coding as an alternative
+to RAID for fault-tolerant storage \cite{raid_alternatives}, we choose these
+traces to represent the workloads of enterprise storage clusters and study the
+applicability of erasure coding to such workloads.  We want to answer three
+questions: (1) \textit{What is the average size of each update?} (2)
+\textit{How common do data updates happen?} (3) \textit{Are updates focused on
+some particular chunks?}  
+%To this end, we identify the lessons learned from our analysis that guide our
+%update design in erasure-coded storage. 
+
+%Our work adopts a write-many-read-many (WMRM) semantics on files. While this
+%is contrary to the write-once-read-many (WORM) using in many distributed file
+%systems nowadays, we justify the needs for data update support by analysing
+%real-world traces collected in research and academic institutes.
+
+\subsubsection{Trace Description}
+
+\paragraph{MSR Cambridge traces.} We use the public block-level
+I/O traces of a storage cluster released by Microsoft Research Cambridge
+\cite{narayanan08}. The traces are captured %below the file system cache 
+on 36 volumes of 179 disks located in 13 servers.  They are composed
+of I/O requests, each specifying the timestamp, the server name, the disk
+number, the read/write type, the starting logical block address, 
+the number of bytes transferred, and the response time.  The whole
+traces span a one-week period starting from 5PM GMT on 22nd February 2007, and
+account for the workloads in various kinds of deployment including user home
+directories, project directories, source control, and media.  
+Each of the chosen volumes contains 800,000 to 4,000,000 write requests. 
+
+%Here, we only summarize the analysis results for the 10 volumes that are
+%chosen for evaluation.  In our technical report [CITE], we present a full
+%summary of analysis for all 36 volumes.
+
+\paragraph{Harvard NFS traces.}  We also use a set of NFS traces
+(\texttt{DEAS03}) released by Harvard \cite{ellard04}.  The traces capture NFS
+requests and responses of a NetApp file server 
+%that serves home directories for Harvard's Division of Engineering and
+%Applied Sciences, 
+that contains a mix of workloads including email, research, and development.
+The whole traces cover a 41-day period from 29th January 2003 to 10th March
+2003.  Each NFS request in the traces contains the timestamp, source and
+destination IP addresses, and the RPC function. 
+%the transport protocol, the NFS RPC protocol version and direction, the RPC
+%XID field and the RPC function. 
+Depending on the RPC function, the request may contain optional fields such as
+file handler, file offset and length.  While the traces describe the
+workloads of a single NFS server, they have also been used in trace-driven
+analysis for clustered storage systems \cite{abd05,hendricks06}.
+
+%Unlike that in a block I/O trace, each NFS request in the trace is
+%accompanied with a file handler, thus we are able to map individual requests
+%to files. We make use of this information to evaluate the accuracy of our
+%reserve space allocation algorithm in \S\ref{sec:design}. We apply
+%similar treatment as the MSR Cambridge trace to merge adjacent sequential
+%requests. 
+
+% Compress caption spacing
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{charts/msr_dist/eps/msr_dist}
+    \caption{Distribution of update size in MSR Cambridge traces.}
+    \label{fig:msr_dist}
+\end{figure}
+
+\begin{table}[t] 
+    \centering
+    \begin{tabular}{rl}
+    \toprule
+    No. of Writes & 172702071 \\
+    WSS (GB) & 174.73 \\
+%    Write Size (GB) & 1734.11 \\
+    Updated WSS (\%) & 68.39 \\
+    Update Writes (\%) & 91.56 \\
+    No. of Accessed Files & 2039724 \\
+    Updated Files (\%) & 12.10 \\
+    Avg. Update Size Per Request (KB) & 10.58 \\
+    \bottomrule
+    \end{tabular}}
+  \caption{Properties of Harvard \texttt{DEAS03} NFS traces.}{
+  \label{table:harvard}
+\end{table}%
+
+\begin{table}[t]  \footnotesize
+{
+\renewcommand{\arraystretch}{0.65}
+    \begin{tabular}{L{0.2cm}L{1.2cm}L{2.5cm}P{1.8cm}P{1.9cm}P{1.5cm}P{1.6cm}}
+    \toprule
+          & Volume & Workload Type & No. of Writes & WSS (GB) & 
+          Updated WSS (\%) & Update Writes (\%) \\
+    \midrule
+      & wdev3  & Test web server      & 671       & <0.01    & 3.33   & 82.74 \\
+      & wdev1  & Test web server      & 1055      & <0.01    & 3.52   & 72.71 \\
+      & rsrch1 & Research projects    & 13738     & 0.11     & 10.42  & 32.27 \\
+      & src21  & Source control       & 14104     & 19.2     & 4.8    & 67.44 \\
+      & web3   & Web/SQL server       & 21330     & 0.59     & 15.63  & 1.9 \\
+      & hm1    & HW monitoring        & 28415     & 0.2      & 52.58  & 85.61 \\
+      & web2   & Web/SQL server       & 38963     & 65.96    & 0.7    & 10.1 \\
+      & rsrch2 & Research projects    & 71223     & 0.59     & 74.73  & 74.27 \\
+      & web1   & Web/SQL server       & 73833     & 3.71     & 3.9    & 86.54 \\
+      & proj4  & Project directory    & 95865     & 123.34   & 2.06   & 82.8 \\
+      & proj3  & Project directory    & 116341    & 5.83     & 13.12  & 30.76 \\
+      & mds1   & Media server         & 116676    & 84.23    & 2.38   & 63.07 \\
+      & wdev2  & Test web server      & 181077    & 0.08     & 99.64  & 94.4 \\
+      & stg1   & Web staging          & 796452    & 79.69    & 3.43   & 93.42 \\
+    * & src22  & Source control       & 805955    & 20.17    & 99.57  & 99.68 \\
+      & wdev0  & Test web server      & 913732    & 0.52     & 63.74  & 95.33 \\
+    * & mds0   & Media server         & 1067061   & 3.09     & 29.27  & 95.77 \\
+    * & rsrch0 & Research projects    & 1300030   & 0.36     & 69.53  & 97.41 \\
+    * & usr0   & Home directory       & 1333406   & 2.44     & 42.54  & 96.08 \\
+      & src20  & Source control       & 1381085   & 0.71     & 62.2   & 95.35 \\
+    * & web0   & Web/SQL server       & 1423458   & 7.26     & 37.25  & 96.23 \\
+      & src12  & Source control       & 1423694   & 1.97     & 47.84  & 98.59 \\
+    * & ts0    & Terminal server      & 1485042   & 0.91     & 49.84  & 95.65 \\
+    * & stg0   & Web staging          & 1722478   & 6.31     & 21.04  & 97.82 \\
+      & usr2   & Home directory       & 1994612   & 378.59   & 9.26   & 75.88 \\
+      & src11  & Source control       & 2170271   & 119.61   & 23.22  & 88.08 \\
+      & proj1  & Project directory  & 2496935   & 693.88   & 6.41   & 72.38 \\
+    * & hm0    & HW monitoring        & 2575568   & 2.31     & 73.16  & 93.21 \\
+    * & prn1   & Print server         & 2769610   & 80.9     & 18.55  & 73.43 \\
+      & proj2  & Project directory    & 3624878   & 409.54   & 55.3   & 96.66 \\
+    * & proj0  & Project directory    & 3697143   & 3.16     & 56.67  & 98.89 \\
+      & usr1   & Home directory     & 3857714   & 655.52   & 15.07  & 67.41 \\
+      & prn0   & Print server         & 4983406   & 14.8     & 55.49  & 73.21 \\
+      & prxy0  & Web proxy   & 12135444  & 0.88     & 81.35  & 98.74 \\
+      & src10  & Source control       & 16302998  & 120.46   & 96.65  & 99.86 \\
+      & prxy1  & Web proxy   & 58224504  & 13.68    & 36.03  & 98.25 \\
+    \bottomrule
+    \end{tabular}}
+}
+    * selected for evaluation
+	\caption{Properties of MSR Cambridge traces: (1) number of writes
+		shows the total number of write requests; (2) working set size refers to
+		the size of unique data accessed in the trace; 
+		(3) percentage of updated working set
+		size refers to the fraction of data in the working set that is updated
+		at least once; and (4) percentage of update writes refers to the
+		fraction of writes that update existing data.}{
+\label{table:msr}
+\end{table}
+
+\subsection{Key Observations from Trace Analysis}
+
+%Through analysing data update behaviour of the 36 MSR Cambridge traces and 41
+%days of Harvard NFS trace, we make the following observations that can be use
+%to drive our work.
+%We study the traces and characterize the following update behaviors. 
+
+\paragraph{Updates are small.}  We study the update size, i.e., the number of
+bytes accessed by each update.  Figure~\ref{fig:msr_dist} shows the average
+update size ranges of the MSR Cambridge traces.  We see that the updates are
+generally small in size. Although different traces show different
+update size compositions, almost all updates occurring in the traces are smaller than
+512KB. Among the 36 traces, 28 have more than $60\%$ of updates
+smaller than 4KB. Similarly, the Harvard NFS traces comprise small updates,
+with average size of only 10.58KB, as shown in Table~\ref{table:harvard}.
+
+\paragraph{Updates are common.} Unsurprisingly, updates are common in both
+storage traces.  We analyze the write requests in the traces and classify them
+into two types: {\em first-write}, i.e., the address is first accessed, and
+{\em update}, i.e., the address is re-accessed.  Table~\ref{table:harvard}
+shows the results of the Harvard NFS traces.  Among nearly $173$~million
+write requests, more than $91\%$ of them are updates.  Table~\ref{table:msr}
+shows the results of the MSR Cambridge traces. All the volumes show more than
+$60\%$ of updates among all write requests, except for two Web/SQL volumes
+(\texttt{web2} and \texttt{web3}), a research volume (\texttt{rsrch1}) and a
+project volume (\texttt{proj3}). We see limited relationship between 
+the working set size (WSS) and the intensity of writes.  For example, the
+volumes with tiny WSS, such as those from firewall/web proxy machines, can
+have much more writes than those with large WSS, such as the project volumes.  
+
+%Also, $12.10\%$ of the files in the Harvard trace are updated at least once.
+
+\paragraph{Update coverage varies.} Although data updates are common in all
+traces, the coverage of updates varies. %from trace to trace.
+We measure the update coverage by studying the fraction of WSS that is updated
+at least once throughout the trace period. For example, from the MSR Cambridge
+traces in Table~\ref{table:msr}, the \texttt{src22} trace shows a $99.57\%$ of
+updated WSS, while updates in the \texttt{mds0} trace only cover $29.27\%$ of
+WSS. In other words, updates in the \texttt{src22} trace span across a large
+number of locations in the working set, while updates in the \texttt{mds0}
+trace are focused on a smaller set of locations.  The variation in update
+coverage implies the need of a dynamic mechanism to improve update efficiency.
+
+%\subsection{Lessons Learned}
+
+%\paragraph{Summary}
+%The above analysis shows that there are workloads in which the majority of
+%writes are small updates. Also, the variation in update coverage implies the
+%need of a dynamic mechanism to improve update efficiency.
+%caching alone may not be sufficient to achieve a good update performance.
+%Therefore, our aim is to devise a mechanism that provides update efficiency. 

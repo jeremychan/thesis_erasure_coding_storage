@@ -1,6 +1,7 @@
 \chapter{CodFS Design}
+\label{chap:codfs}
 
-\section{Parity Update Schemes}
+\section{Parity Updates}
 \label{sec:parity}
 
 %In a traditional file system, handling update writes is a trivial problem. All
@@ -59,7 +60,7 @@ and parity chunks.
 %new one.
 
 \paragraph{Read-modify writes.} A read-modify write leverages the linearity of
-erasure coding for parity updates (see \S\ref{sec:background}).  It first
+erasure coding for parity updates (see \S\ref{sec:ec_background}).  It first
 reads the old data chunk to be updated and all the old parity chunks in the
 segment.  It then computes the change between the old and new data chunks, and
 applies the change to each of the parity chunks. 
@@ -92,9 +93,6 @@ parity chunks between nodes for parity updates.
 %Compared with the classical approaches, delta-based techniques are more
 %suited in a distributed environment.
 
-% Compress caption spacing
-%\setlength\abovecaptionskip{6pt minus 2pt}
-%\setlength\belowcaptionskip{-8pt minus 1pt}
 \begin{figure*}[!t]
     \centering
     \includegraphics[width=4.8in]{figs/schemes_chunkflow}
@@ -112,7 +110,7 @@ eliminates redundant network traffic by only transferring a {\em parity delta}
 which is of the same size as the modified data range~\cite{cao94,storer08}.  A
 delta-based approach
 leverages the linearity of erasure coding described in
-\S\ref{sec:background}. It first reads the range of the data chunk to be
+\S\ref{sec:ec_background}. It first reads the range of the data chunk to be
 modified and computes the delta, which is the change between old and new data at the modified 
 range of the data chunk, for each parity chunk. It then sends the
 modified data range and the parity deltas computed to the data node and all
@@ -224,7 +222,7 @@ other hand,  $\PLR$ incurs no disk seek when reading the parity chunk
 \texttt{a+b} since its parity deltas \texttt{$\Delta$a} and \texttt{$\Delta$b} are all placed
 in the contiguous reserved space following the parity chunk \texttt{a+b}. 
 
-\subsubsection{Determining the Reserved Space Size}
+\section{Determination of Reserved Space Size}
 \label{sec:reserve_strategies}
 
 Finding the appropriate reserved space size is challenging.  If the space is
@@ -291,7 +289,7 @@ $\emph{reserved} \gets $\verb|DEFAULT_SIZE|\;
   }
 %  \del{$\emph{reserved} \gets$ \FuncSty{predict}$(\emph{parityChunkSet})$}% \;}
 }
-\caption{\fontsize{8.3}{9.6}\selectfont Workload-aware Reserved Space Management}
+\caption{Workload-aware Reserved Space Management}
 \label{alg:deallocate}
 \end{algorithm}
 
@@ -386,6 +384,3 @@ heuristic works well enough under real-world workloads (see
 %performance and we will evaluate the three strategies in
 %\S\ref{sec:reserve_evaluation}. 
 
-% Reset caption spacing
-%\setlength\abovecaptionskip{10pt}
-%\setlength\belowcaptionskip{0pt}

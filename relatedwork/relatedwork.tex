@@ -1,0 +1,99 @@
+\chapter{Related Work}
+\label{chap:relatedwork}
+
+\section{Erasure Coding}
+
+Quantitative analysis shows that erasure coding consumes less bandwidth and
+storage than replication with similar system durability
+\cite{weatherspoon02,rodrigues05}.  Several studies adopt erasure coding in
+distributed storage systems.  OceanStore \cite{kubiatowicz00,rhea03} combines
+replication and erasure coding for wide-area network storage.  TotalRecall
+\cite{bhagwan04} applies replication or erasure coding to different files
+dynamically according to the availability level predicted by the system.  Ursa
+Minor \cite{abd05} focuses on cluster storage and encodes files of
+heterogeneous types based on the failure models and access patterns.  Panasas
+\cite{welch08} performs client-side encoding on a per-file basis. 
+TickerTAIP \cite{cao94}, PARAID \cite{weddle07} and Pergamum \cite{storer08}
+offload the parity computation to the storage array.
+%R-Admad~\cite{liu09} enhances the reliability of a deduplication
+%system by adopting erasure coding to store deduplicated data.  
+%CAROM \cite{ma13} uses replication for caching in its erasure coded
+%distributed storage system so as to benefit high throughput from replicated
+%cache and low storage overhead from erasure-coded data. 
+Azure \cite{huang12} and Facebook \cite{sathiamoorthy13} propose efficient
+erasure coding schemes to speed up degraded reads. 
+% But they perform coding off the write path by first performing replication
+% and later transforming replicas into their erasure-coded form. 
+We complement the above studies by improving update efficiency and recovery
+performance in erasure-coded clustered storage. 
+%data modification in its encoded form. In addition, CodFS minimizes network
+%traffic between clients and the storage cluster by offloading encoding
+%overhead to the server-side.
+
+\section{Log-structured File System}
+
+Log-structured File System (LFS) \cite{rosenblum92} first proposes to append
+updates sequentially to disk to improve write performance.  Zebra
+\cite{hartman95} extends LFS for RAID-like distributed storage systems by
+striping logs across servers.  Self-tuning LFS \cite{matthews97} exploits
+workload characteristics to improve I/O performance.  Clustered storage
+systems, such as GFS \cite{ghemawat03} and Azure \cite{calder11}, also adopt
+the LFS design for the write-once read-many workload.  The more recent work
+Gecko \cite{shin13} uses a chained-log design to reduce disk I/O contention of
+LFS in RAID storage.  CodFS handles updates differently from LFS, in which it
+performs in-place updates to data and log-based updates to parity chunks.  It
+also allocates reserve space for parity logging to further mitigate disk
+seeks.  The above studies (including CodFS) focus on disk backends and
+commodity hardware, while the LFS design is also adopted in other types of
+emerging storage media, such as SSDs \cite{agrawal08} and DRAM storage
+\cite{ongaro11}.  
+%Both LFS and CodFS aim to 
+%reducing the amount of time that a disk spends on seeking. 
+%Unlike Zebra, CodFS performs in-place updates to data and only applies
+%logging for parity blocks. With the help of a reserve space, CodFS achieves
+%significantly shorter recovery time by minimizing fragmentation in both data
+%and parity blocks. 
+
+
+%Both RAMCloud \cite{ongaro11} and Gecko \cite{shin13} apply a log-structured
+%approach for its data. RAMCloud keeps all data permanently on DRAM which does
+%not suffer from the fragmentation problem we present.  However, as admitted
+%in the paper, RAMCloud is not yet a practical large-scale storage solution
+%for large media files due to the high cost of DRAM. Gecko proposed a
+%chained-log design to minimize I/O contention occurring in typical RAID
+%systems and LFS, but their design is limited to disks in a single host only.
+%Also, write throughput of Gecko is limited by the bandwidth of the tail disk.
+%CodFS emphasizes on scalability by utilizing the bandwidth of all storage
+%nodes. 
+
+\section{Parity Logging}
+
+%Traditional RAID mainly use two approaches to update parity chunks during
+%writes \cite{thomasian05}: Read-modify write and reconstruct write are used 
+%Both approaches are I/O expensive for small updates.  
+Parity logging \cite{chen94,stodolsky93} has been proposed to mitigate the disk
+seek overhead in parity updates.  It accumulates parity updates for each
+parity region in a log and flushes updates to the parity region when the log
+is full.  The parity and log regions can be distributed across all disks
+\cite{stodolsky93}.  On the other hand, CodFS reserves log space next to each
+parity chunk so as to reduce disk seeks due to frequent small writes.  It
+extends the prior parity logging approaches by allowing future shrinking of
+the reserved space based on the workload. 
+%which predefines a fixed-size log region for each parity region, CodFS
+%reserves the log space on the write path and allows future shrinking of the
+%reserved space depending on the workload.
+%We also CodFS also drives the experiments by real-world trace.
+
+%Our full-overwrite scheme is similar to the approaches in the studies
+%\cite{aguilera05,frolund04,zhang12}.  CodFS complements them by further
+%comparing the fully-overwrite scheme with other update schemes, and proposes
+%the parity-logging with reserved space scheme that reduces disk fragmentation
+%and achieves higher I/O throughput. 
+
+%similar update schemes to the fully-overwrite mode in CodFS for their
+%erasure-coded storage systems. Aguilera's and Frolund's main focus are to
+%maintain entire system consistency under their update schemes while
+%guaranteeing good performance. Zhang compared their update scheme with
+%traditional reconstruction-write and read-modify-write to illustrate the
+%improvements. 
+
