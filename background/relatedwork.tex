@@ -1,27 +1,51 @@
-\chapter{Related Work}
+\section{Related Work}
 \label{chap:relatedwork}
 
-\section{Erasure Coding}
+\subsection{Erasure Coding}
 
 Quantitative analysis shows that erasure coding consumes less bandwidth and
 storage than replication with similar system durability
-\cite{weatherspoon02,rodrigues05}.  
+\cite{weatherspoon02,rodrigues05}. Under the same storage overhead, it is shown
+that the \textit{mean time to failure} (MTTF) for storage systems utilizing
+erasure coding can be orders of magnitude higher than those using replication
+\cite{weatherspoon02}.
 
-Several studies adopt erasure coding in
-distributed storage systems.  OceanStore \cite{kubiatowicz00,rhea03} combines
-replication and erasure coding for wide-area network storage.  
+% new coding methods
 
-TotalRecall
-\cite{bhagwan04} applies replication or erasure coding to different files
-dynamically according to the availability level predicted by the system.  
+\subsection{Erasure-coded Storage}
+
+Several studies adopt erasure coding in distributed storage systems.  OceanStore
+\cite{kubiatowicz00,rhea03} combines replication and erasure coding for
+wide-area network storage.  It uses a Byzantine-fault tolerant model to provide
+strong consistency among replicas.
+
+TotalRecall \cite{bhagwan04} applies replication or erasure coding to different
+files dynamically according to the availability level predicted by the system.
+In addition to the level of redundancy, TotalRecall switches between (1)
+\textit{eager repair}, in which the level of redundancy is maintained by
+immediate repair action after a failure, and \textit{lazy repair}, in which the
+additional redundancy is temporarily used to delay repair action.
+
+%ceph
 
 Ursa Minor \cite{abd05} focuses on cluster storage and encodes files of
-heterogeneous types based on the failure models and access patterns.  
+heterogeneous types based on the failure models and access patterns. It adapts
+to changing workload pattern by supporting online re-encoding of data. In
+addition, it supports versioning for its objects.
 
-Panasas \cite{welch08} performs client-side encoding on a per-file basis. 
+Panasas \cite{welch08} performs client-side encoding on a per-file basis. It is
+shown by extensive experiments that by moving the computation to clients, the
+parity computation power of the system scales up as the number of clients
+increases. In addition, this design can be extended with \textit{end-to-end
+    integrity} by computing and verifying checksum at both ends of the write
+paths.
 
-TickerTAIP \cite{cao94}, PARAID \cite{weddle07} and Pergamum \cite{storer08}
-offload the parity computation to the storage array.
+Unlike Panasas, some designs such as TickerTAIP \cite{cao94}, PARAID
+\cite{weddle07} and Pergamum \cite{storer08} offload the parity computation to
+the storage array. TickerTAIP utilizes a group of \textit{intelligent} worker
+nodes, which are nodes with coding ability, connected in a small-area network.
+This is similar to the concept of \textit{object storage devices} (OSDs) in
+modern context. % STOPS HERE
 
 R-Admad \cite{liu09} enhances the reliability of a deduplication
 system by adopting erasure coding to store deduplicated data.  
@@ -45,7 +69,10 @@ performance in erasure-coded clustered storage.
 %traffic between clients and the storage cluster by offloading encoding
 %overhead to the server-side.
 
-\section{Log-structured File System}
+
+\subsection{Log-structured File System}
+
+%Zebra
 
 Log-structured File System (LFS) \cite{rosenblum92} first proposes to append
 updates sequentially to disk to improve write performance.  Zebra
@@ -81,7 +108,7 @@ emerging storage media, such as SSDs \cite{agrawal08} and DRAM storage
 %CodFS emphasizes on scalability by utilizing the bandwidth of all storage
 %nodes. 
 
-\section{Parity Logging}
+\subsection{Parity Logging}
 
 %Traditional RAID mainly use two approaches to update parity chunks during
 %writes \cite{thomasian05}: Read-modify write and reconstruct write are used 

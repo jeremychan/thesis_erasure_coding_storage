@@ -1,5 +1,6 @@
 
-\section{Update Behavior in Real-world Workload} 
+\chapter{Motivation} 
+\label{chap:motivation}
 \label{sec:trace}
 
 We study two sets of real-world storage traces collected from large-scale
@@ -19,9 +20,9 @@ some particular chunks?}
 %systems nowadays, we justify the needs for data update support by analysing
 %real-world traces collected in research and academic institutes.
 
-\subsection{Trace Description}
+\section{Trace Description}
 
-\subsubsection{MSR Cambridge traces.} We use the public block-level
+\subsection{MSR Cambridge traces.} We use the public block-level
 I/O traces of a storage cluster released by Microsoft Research Cambridge
 \cite{narayanan08}. The traces are captured %below the file system cache 
 on 36 volumes of 179 disks located in 13 servers.  They are composed
@@ -37,7 +38,7 @@ Each of the chosen volumes contains 800,000 to 4,000,000 write requests.
 %chosen for evaluation.  In our technical report [CITE], we present a full
 %summary of analysis for all 36 volumes.
 
-\subsubsection{Harvard NFS traces.}  We also use a set of NFS traces
+\subsection{Harvard NFS traces.}  We also use a set of NFS traces
 (\texttt{DEAS03}) released by Harvard \cite{ellard04}.  The traces capture NFS
 requests and responses of a NetApp file server 
 %that serves home directories for Harvard's Division of Engineering and
@@ -144,14 +145,14 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
 \label{table:msr}
 \end{table}
 
-\subsection{Key Observations from Trace Analysis}
+\section{Update Behavior in Real-world Workload}
 
 %Through analysing data update behaviour of the 36 MSR Cambridge traces and 41
 %days of Harvard NFS trace, we make the following observations that can be use
 %to drive our work.
 %We study the traces and characterize the following update behaviors. 
 
-\subsubsection{Updates are small}  We study the update size, i.e., the number of
+\subsection{Updates are small}  We study the update size, i.e., the number of
 bytes accessed by each update.  Figure~\ref{fig:msr_dist} shows the average
 update size ranges of the MSR Cambridge traces.  We see that the updates are
 generally small in size. Although different traces show different
@@ -160,7 +161,7 @@ update size compositions, almost all updates occurring in the traces are smaller
 smaller than 4KB. Similarly, the Harvard NFS traces comprise small updates,
 with average size of only 10.58KB, as shown in Table~\ref{table:harvard}.
 
-\subsubsection{Updates are common} Unsurprisingly, updates are common in both
+\subsection{Updates are common} Unsurprisingly, updates are common in both
 storage traces.  We analyze the write requests in the traces and classify them
 into two types: {\em first-write}, i.e., the address is first accessed, and
 {\em update}, i.e., the address is re-accessed.  Table~\ref{table:harvard}
@@ -176,7 +177,7 @@ have much more writes than those with large WSS, such as the project volumes.
 
 %Also, $12.10\%$ of the files in the Harvard trace are updated at least once.
 
-\subsubsection{Update coverage varies} Although data updates are common in all
+\subsection{Update coverage varies} Although data updates are common in all
 traces, the coverage of updates varies. %from trace to trace.
 We measure the update coverage by studying the fraction of WSS that is updated
 at least once throughout the trace period. For example, from the MSR Cambridge
@@ -189,9 +190,9 @@ coverage implies the need of a dynamic mechanism to improve update efficiency.
 
 %\subsection{Lessons Learned}
 
-%\paragraph{Summary}
-%The above analysis shows that there are workloads in which the majority of
-%writes are small updates. Also, the variation in update coverage implies the
-%need of a dynamic mechanism to improve update efficiency.
-%caching alone may not be sufficient to achieve a good update performance.
-%Therefore, our aim is to devise a mechanism that provides update efficiency. 
+\section{Summary}
+The above analysis shows that there are workloads in which the majority of
+writes are small updates. Also, the variation in update coverage implies the
+need of a dynamic mechanism to improve update efficiency.
+caching alone may not be sufficient to achieve a good update performance.
+Therefore, our aim is to devise a mechanism that provides update efficiency. 
