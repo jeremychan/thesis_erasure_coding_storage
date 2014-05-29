@@ -2,10 +2,40 @@
 \subsection{Erasure Coding}
 \label{sec:ec_background}
 
-We provide the background details of an erasure-coded storage system
-considered in this work. We refer readers to the tutorial \cite{plank13} 
-for the essential details of erasure coding in the context of storage systems. 
+It has been known that failures in storage systems are common \cite{ghemawat03}.
+Components in a storage system can fail in numerous ways, including sector
+errors, bit flips and physical failures \cite{plank13}. Erasure coding provides
+redundancy to prevent data loss in an event of component failure. Here, we
+provide the background details of an erasure codes considered in
+this work. 
 
+\subsubsection{Replication}
+
+The simplest form of erasure code is replication, in which we make $k$ copies
+for each byte in the data and distribute the copies across $k$ devices. As a
+result, we can tolerate at most $k-1$ failures as there is at least one
+surviving copy for each byte of data.
+
+Although replication is very simple, it introduces high storage overhead. For
+example, GFS \cite{ghemawat03} by default tolerates up to two simultaneous
+device failures, which requires a storage cost that is $3\times$ the original
+size of data.
+
+\subsubsection{Maximum Distance Separable (MDS) Codes}
+
+%We refer readers to the tutorial \cite{plank13} 
+%for the essential details of erasure coding in the context of storage systems. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.7\linewidth]{figs/erasure_code}
+    \caption{An $(n,k)$-code encodes $k$ data chunks into $n-k$ parity chunks.
+        When up to $n-k$ chunks fail, their content can be recovered using the
+        information in the remaining $k$ chunks.}
+    \label{fig:erasure_code}
+\end{figure}
+
+Figure~\ref{fig:erasure_code} illustrates the acts of encoding and decoding. 
 We consider an erasure-coded storage cluster with $M$ nodes (or servers).  We
 divide data into {\em segments} and apply erasure coding independently on a
 per-segment basis.  We denote an $(n,k)$-code as an erasure coding scheme
@@ -16,6 +46,17 @@ We assume $n < M$, and have the collection of $n$ data and parity chunks
 distributed across $n$ of the $M$ nodes in the storage cluster.  We consider
 {\em Maximum Distance Separable} erasure coding, i.e., the original segment
 can be reconstructed from any $k$ of the $n$ data and parity chunks. 
+
+An MDS code provides optimal fault tolerance for a given storage overhead. For
+example, using a $(8,6)$-code can reduce the redundancy overhead to $33\%$,
+which is significantly less than $200\%$ in three-way replication, without
+sacrificing the level of fault tolerance. 
+
+There are many variants of MDS codes, such as, Reed-Soloman (RS) codes
+\cite{reed60}, RDP \cite{corbett04}, EVENODD \cite{plank08} and Liberation
+\cite{blaum95}. These codes differ in the ways in calculating the parity chunks.
+
+\subsubsection{Linearity Property of Erasure Codes}
 
 Each parity chunk can be in general encoded by computing a linear combination
 of the data chunks.  Mathematically, for an $(n,k)$-code, let

@@ -1,0 +1,157 @@
+\subsection{Parity Update Approaches}
+
+Handling updates in a replicated storage is relatively straight-forward. We 
+propagate the each update to all replicas. In addition, techniques including 
+chain-replication \cite{vanRenesse04} can be used to reduce the update overhead.
+On the other hand, updates in an erasure-coded storage is complicated by the
+need to maintain parity consistency.  
+In this section, we re-examine existing parity update schemes
+%and evaluate the feasibility of
+%adopting these approaches in erasure-coded clustered storage systems.  We
+%first study 
+that fall into two classes: the RAID-based approaches and the delta-based
+approaches. 
+%We discuss their strengths and drawbacks. 
+%and how we control the size of such space.
+
+
+\subsubsection{RAID-based Approaches}
+
+We describe three classical approaches of parity updates that are typically
+found in RAID systems \cite{chen95,thomasian05}. 
+
+%\red{Should we use ``stripe,block'' in pair or ``segment, chunk'' in pair ?}
+
+\paragraph{Full-segment writes.} A full-segment write (or full-stripe write)
+updates all data and parity chunks in a segment. 
+It is used in a large sequential
+write where the write size is a multiple of segment size.  To make a
+full-segment write work for small updates, one way is to pack several updates
+into a large piece until a full segment can be written in a single operation 
+\cite{menon95}. Full-segment writes do not need to read the old data or parity
+chunks, and hence achieve the best update performance.
+
+%For instance, in log-structured arrays (LSAs), a cache is used to accumulate
+%modified chunks until a full segment can be written in a single operation
+
+\paragraph{Reconstruct writes.} A reconstruct write first reads all the chunks
+from the segment that are not involved in the update.  Then it computes the new parity chunks
+using the read chunks and the new chunks to be written, and writes all data
+and parity chunks. 
+%other than the ones currently writing to are read. We then compute a new parity
+%based on these chunks. After that, we simply replace the old parity with the
+%new one.
+
+\paragraph{Read-modify writes.} A read-modify write leverages the linearity of
+erasure coding for parity updates (see \S\ref{sec:ec_background}).  It first
+reads the old data chunk to be updated and all the old parity chunks in the
+segment.  It then computes the change between the old and new data chunks, and
+applies the change to each of the parity chunks. 
+%Next, we compute the new parity chunk by XOR the parity update with the old
+%parity chunk. 
+Finally, it writes the new data chunk and all new parity chunks to their
+respective locations. 
+%Therefore, updating a single chunk with single parity by read-modify write
+%requires 4 I/O operations, reading and writing both data chunk and parity
+%chunk.
+
+\paragraph{Discussion.}  Full-segment writes can be implemented through a
+log-based design to support small updates, but logging has two limitations.
+First, we need an efficient garbage collection mechanism to reclaim space by
+removing stale chunks, and this often hinders update performance
+\cite{seltzer95}. Second, logging introduces additional disk seeks to retrieve
+the updates, which often degrades sequential read and recovery performance
+\cite{matthews97}. 
+On the other hand, both reconstruct writes and read-modify writes 
+%mitigate the fragmentation of log-structured file systems through in-place
+%updates.  However, they 
+are traditionally designed for a single host deployment. Although some recent
+studies implement read-modify writes in a distributed setting
+\cite{frolund04,zhang12}, both approaches
+introduce significant network traffic since each update must transfer data or
+parity chunks between nodes for parity updates. 
+
+%Using reconstruct write approach in a distributed file system would introduce an excessive amount of inter-node network traffic since for each update, we need to transfer data chunks between nodes in order to update the parity. The read-modify write approach also introduces unnecessary network traffic, especially when the update size is far smaller than the chunk size. 
+
+%Compared with the classical approaches, delta-based techniques are more
+%suited in a distributed environment.
+
+\subsubsection{Delta-based Approaches}
+\label{sec:delta_based}
+
+Another class of parity updates, called the {\em delta-based approaches}, 
+eliminates redundant network traffic by only transferring a {\em parity delta}
+which is of the same size as the modified data range~\cite{cao94,storer08}.  A
+delta-based approach
+leverages the linearity of erasure coding described in
+\S\ref{sec:ec_background}. It first reads the range of the data chunk to be
+modified and computes the delta, which is the change between old and new data at the modified 
+range of the data chunk, for each parity chunk. It then sends the
+modified data range and the parity deltas computed to the data node and all
+other parity nodes for updates, respectively. 
+%both the data and parity chunks are no longer required to be fully read
+%for computing and applying delta when the update is smaller than chunk size. 
+Instead of transferring the entire data and parity chunks as in
+read-modify writes, transferring the modified data range and parity deltas
+reduces the
+network traffic and is suitable for clustered storage.  In the following, we
+describe some delta-based approaches proposed in the literature. 
+
+%Meanwhile, the network traffic for transferring delta 
+%between the data node and parity node can be reduce.
+%updating existing stripes in a erasure-coded and 
+%distributed storage setting. 
+
+%According to the trace analysis, the update size is often much smaller than
+%chunk size.  Hence, for such small updates, using traditional
+%read-modify-write scheme is still not optimal.  As traditional read-modify-write
+%scheme computes parity updates using the unit of chunk size, this scheme
+%still generates extra traffic caused by those non-modified content within a
+%chunk. Here, we examine four different approaches for saving the data update
+%or parity deltas on disk.
+
+\paragraph{Full-overwrite (\FO).} Full-overwrite
+\cite{aguilera05} applies in-place updates
+to both data and parity chunks. It merges the old data and parity chunks
+directly at specific offsets with the modified data range and parity deltas,
+respectively. Note that merging each parity delta requires an additional disk read of
+old parity chunk at the specific offset to compute the new parity content to be
+written.
+%The baseline approach is the fully-overwrite approach, which requires the
+%same number of disk I/O as the read-modify-write The data update overwrites
+%the original data chunk 
+%after the corresponding parity delta is computed.
+%The parity delta is then sent to the parity location and merged into the
+%original parity chunk by performing XOR between the delta and the old parity.
+%Two read operations and two write operations are required in this approach. 
+
+\paragraph{Full-logging (\FL).} Full-logging saves the disk read overhead of
+parity chunks by appending all data and parity updates. 
+That is, after the modified data
+range and parity deltas are respectively sent to the corresponding data and
+parity nodes, the storage nodes create logs to store the updates.  The logs
+will be merged with the original chunks when the chunks are read subsequently.
+\FL is used in enterprise clustered storage systems such as 
+GFS \cite{ghemawat03} and Azure \cite{calder11}. 
+
+\paragraph{Parity-logging (\PL).} Parity-logging \cite{stodolsky93,jin11}
+can be regarded as a hybrid of \FO and \FL.  It saves the disk read overhead of
+parity chunks and additionally avoids merging overhead on data chunks introduced in \FL.
+Since data chunks are more likely to be read than parity chunks,
+merging logs in data chunks can significantly degrade read 
+performance. Hence, in \PL, the original data chunk is overwritten in-place with the
+modified data range, while the parity deltas are logged at the parity nodes.
+%Hence, there is also no disk read for the parity chunks on the update path.
+%The parity chunks will be merged with the parity deltas when they are accessed
+%(e.g., during recovery). 
+
+\paragraph{Discussion.} 
+Although the delta-based approaches reduce network traffic,
+they are not explicitly designed to reduce disk I/O. Both \FL
+and \PL introduce disk fragmentation and require efficient garbage
+collection. The fragmentations often hamper further 
+accesses of those chunks with logs. Meanwhile, \FO introduces additional disk reads
+for the old parity chunks on the update path, compared with \FL and \PL.
+Hence, to take a step further, we want to address the question: 
+\textit{Can we reduce the disk I/O on both the update path and further
+accesses?} We describe our novel parity update approach in \S~\ref{sec:parity}.

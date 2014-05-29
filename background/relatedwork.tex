@@ -4,7 +4,12 @@
 In this section, we review related work on erasure coding, erasure-coded
 storage, log-structured file systems and parity logging.
 
-\subsection{Erasure Coding}
+\subsection{Erasure-coded Storage}
+
+Traditionally, clustered storage systems adopt replication to provide data
+redundancy. GFS \cite{ghemawat03} first proposes to store three replicas for
+data, which is adopted by subsequent designs including Ceph \cite{weil06} and
+Hadoop \cite{shvachko10}.
 
 Quantitative analysis shows that erasure coding consumes less bandwidth and
 storage than replication with similar system durability
@@ -13,16 +18,10 @@ that the \textit{mean time to failure} (MTTF) for storage systems utilizing
 erasure coding can be orders of magnitude higher than those using replication
 \cite{weatherspoon02}.
 
-% new coding methods
-
-\subsection{Erasure-coded Storage}
-
-% RAID and autoraid
-
-Several studies adopt erasure coding in distributed storage systems.  OceanStore
-\cite{kubiatowicz00,rhea03} combines replication and erasure coding for
-wide-area network storage.  It uses a Byzantine-fault tolerant model to provide
-strong consistency among replicas.
+Therefore, several studies adopt erasure coding in clustered storage systems.
+OceanStore \cite{kubiatowicz00,rhea03} combines replication and erasure coding
+for wide-area network storage.  It uses a Byzantine-fault tolerant model to
+provide strong consistency among replicas.
 
 TotalRecall \cite{bhagwan04} applies replication or erasure coding to different
 files dynamically according to the availability level predicted by the system.
@@ -30,8 +29,6 @@ In addition to the level of redundancy, TotalRecall switches between (1)
 \textit{eager repair}, in which the level of redundancy is maintained by
 immediate repair action after a failure, and \textit{lazy repair}, in which the
 additional redundancy is temporarily used to delay repair action.
-
-%ceph
 
 Ursa Minor \cite{abd05} focuses on cluster storage and encodes files of
 heterogeneous types based on the failure models and access patterns. It adapts
@@ -93,6 +90,11 @@ Zebra \cite{hartman95} extends LFS for RAID-like distributed storage systems by
 striping logs across servers. Zebra maintains an append-only log for each client
 and mitigates parity update overhead by computing parity for the log instead of
 the files. 
+
+AutoRAID \cite{wilkes95} uses a workload-aware approach to store active data
+using replication (RAID-1) and inactive data using erasure coding (RAID-5). In
+the RAID-5 layer, it batches updates in a log to mitigate read-modify write
+overhead in RAID.
 
 Several studies focus on designing more efficient garbage collection algorithms
 for LFS. Self-tuning LFS \cite{matthews97} exploits workload characteristics to

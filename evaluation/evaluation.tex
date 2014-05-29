@@ -90,9 +90,8 @@ measurements on our testbed and find that the effective disk and network
 bandwidths of each node are 144MB/s and 114.5MB/s, respectively.  Thus,
 the nodes are network-bound, and we set $B_{in}\!=\!B_{out}\!=$ 114.5MB/s in
 our model.  We configure CodFS with one node as the MDS and $M$ nodes as OSDs,
-where $6\!\le\!M\!\le\!10$.  We consider the RAID-6 Reed-Solomon (RS)
-\cite{reed60} and RDP
-code \cite{corbett04} with $(n,k) = (6,4)$.  The coded chunks are distributed
+where $6\!\le\!M\!\le\!10$.  We consider the RS codes and RDP
+codes with $(n,k) = (6,4)$.  The coded chunks are distributed
 over the $M$ OSDs.  We
 have 10 other nodes in the testbed as clients that transfer streams of
 segments simultaneously. 
