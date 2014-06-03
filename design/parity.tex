@@ -1,17 +1,13 @@
 \chapter{CodFS Design}
 \label{chap:codfs}
 
+In this chapter, we propose a new parity update approach which reduces the disk
+seek overhead of \PL presented in \S~\ref{sec:parity_background}. We then move
+to discuss the design and implementation of CodFS, which is an erasure-coded
+clustered storage that supports efficient update and recovery.
+
 \section{Parity Update Approach}
 \label{sec:parity}
-
-\begin{figure*}[!t]
-    \centering
-    \includegraphics[width=4.8in]{figs/schemes_chunkflow}
-%    \hspace{-3pt}
-    \vspace{-3pt}
-    \caption{Illustration on different parity update schemes.}
-    \label{fig:schemes_chunkflow}
-\end{figure*}
 
 Data updates in erasure-coded clustered storage systems introduce performance
 overhead, since they also need to update parity chunks for consistency.  We
@@ -36,6 +32,16 @@ when unused reserved space can be reclaimed to reduce the storage overhead.
 
 \subsection{An Illustrative Example} 
 
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=4.8in]{figs/schemes_chunkflow}
+%    \hspace{-3pt}
+    \vspace{-3pt}
+    \caption{Illustration on different parity update schemes.}
+    \label{fig:schemes_chunkflow}
+\end{figure*}
+
+
 Figure~\ref{fig:schemes_chunkflow} illustrates the differences of the
 delta-based approaches in \S\ref{sec:delta_based} and \PLR, using a
 (3,2)-code as an example.  The incoming data stream describes the sequence of
@@ -57,7 +63,7 @@ other hand,  $\PLR$ incurs no disk seek when reading the parity chunk
 \texttt{a+b} since its parity deltas \texttt{$\Delta$a} and \texttt{$\Delta$b} are all placed
 in the contiguous reserved space following the parity chunk \texttt{a+b}. 
 
-\section{Determination of Reserved Space Size}
+\subsection{Determination of Reserved Space Size}
 \label{sec:reserve_strategies}
 
 Finding the appropriate reserved space size is challenging.  If the space is

@@ -1,24 +1,22 @@
-
 \chapter{Motivation} 
 \label{chap:motivation}
 \label{sec:trace}
 
-We study two sets of real-world storage traces collected from large-scale
-storage server environments and characterize their update patterns.  Motivated
-by the fact that enterprises are considering erasure coding as an alternative
-to RAID for fault-tolerant storage \cite{raid_alternatives}, we choose these
-traces to represent the workloads of enterprise storage clusters and study the
-applicability of erasure coding to such workloads.  We want to answer three
-questions: (1) \textit{What is the average size of each update?} (2)
-\textit{How common do data updates happen?} (3) \textit{Are updates focused on
-some particular chunks?}  
+%Our work adopts a write-many-read-many semantics on files. While this is
+%contrary to the write-once-read-many assumed by many clustered storage
+%systems nowadays, 
+Our work is based on the assumption that updates are common in real-world workload. We
+back our claim by studying two sets of real-world storage traces collected from
+large-scale storage server environments and characterizing their update
+patterns.  Motivated by the fact that enterprises are considering erasure coding
+as an alternative to RAID for fault-tolerant storage \cite{raid_alternatives},
+we choose these traces to represent the workloads of enterprise storage
+clusters.  We want to answer three questions: (1) \textit{What is the average
+    size of each update?} (2) \textit{How common do data updates happen?} (3)
+\textit{Are updates focused on some particular chunks?}  
 %To this end, we identify the lessons learned from our analysis that guide our
 %update design in erasure-coded storage. 
 
-%Our work adopts a write-many-read-many (WMRM) semantics on files. While this
-%is contrary to the write-once-read-many (WORM) using in many distributed file
-%systems nowadays, we justify the needs for data update support by analysing
-%real-world traces collected in research and academic institutes.
 
 \section{Trace Description}
 
@@ -190,9 +188,11 @@ coverage implies the need of a dynamic mechanism to improve update efficiency.
 
 %\subsection{Lessons Learned}
 
-\section{Summary}
+\section{Summary} 
+
 The above analysis shows that there are workloads in which the majority of
-writes are small updates. Also, the variation in update coverage implies the
-need of a dynamic mechanism to improve update efficiency.
-caching alone may not be sufficient to achieve a good update performance.
-Therefore, our aim is to devise a mechanism that provides update efficiency. 
+writes are small updates. This indicates the need to devise a mechanism that
+provides update efficiency, especially in erasure-coded storage where parity
+maintenance may incur significant overhead. Yet, the variation in update
+coverage implies the need of a dynamic mechanism to improve update efficiency as
+caching alone may not be sufficient to achieve a good update performance. 
