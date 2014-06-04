@@ -1,9 +1,6 @@
 \chapter{Conclusions}
 \label{chap:conclusions}
 
-In this chapter, we summarize our work and address future improvements for both
-CodFS and TWEEN.
-
 \section{Summary}
 
 In CodFS, our key contribution is the parity logging with reserved space (\PLR) scheme,
@@ -24,17 +21,36 @@ collection overhead.
 
 \section{Future Work}
 
-\subsection{Latency Evaluation}
+\subsection{Applying CodFS on Other Storage Media}
 
-We plan to evaluate other metrics (e.g., latency) of different parity
-update schemes. 
+Currently, CodFS optimizes update performance on disk-based clustered storage
+with commodity hardware configurations. We may extend CodFS to other storage
+media, such as those utilizing DRAM for storage \cite{ongaro11}, or those using
+a combination of NVRAM and SSDs \cite{qiu13}. Although the seek time may not be
+as significant in these types of storage media, we believe CodFS can still
+benefit performance by reducing fragmentation in the system. However, an
+important limitation for these types of storage media is the high storage cost.
+We pose the issue of further reducing the reserved space overhead as future
+work.
 
-\subsection{Overhead of Shrinking and Merging}
+\subsection{Exploring New Reserved Space Management Designs}
 
-We evaluate the impact of the shrinking and merging
-operations on throughput and latency. 
+In our work, CodFS only uses a simple workload-aware design for reserved space
+management. Although we show that this heuristic works reasonably well in
+evaluations, we plan to explore more advanced designs. For example, instead of
+shrinking the reserved space of all segments daily, it is beneficial to
+periodically shrink some of the popular segments during idle time. To choose the
+right segments to shrink, we may
+utilize existing victim selection policies in LFS, such as cost-benefit
+\cite{rosenblum92} and cost-hotness \cite{min12}.
 
-\subsection{Reserved Space Management Design}
+\subsection{Deploying TWEEN on Single-SSD Systems}
 
-We explore a more robust design of
-reserved space management.
+Currently, TWEEN focuses on SSD RAID deployments, which may limit its
+applications to enterprise environments.  However, since our system decouples
+the RAID layer from the file system layer, it is also possible to adopt TWEEN on
+a single-SSD setup. We believe that by batching small random writes in a
+non-volatile buffer and aligning the granularity of the SSD garbage collection,
+our design can also benefit the write performance and endurance in a desktop
+environment using a single SSD.  We pose the evaluation of TWEEN on single-SSD
+deployments under desktop workloads as future work.
