@@ -1,7 +1,7 @@
 #!/usr/bin/gnuplot
 
 set terminal postscript enhanced portrait 'Times-Roman' 36 size 10,7 solid 
-set output "./eps/msr_dist.eps"
+set output "./eps/msr_dist_1.eps"
 set size 3,1
 
 set xtics font "Times-Roman, 45" 
@@ -16,10 +16,10 @@ set ytics font "Times-Roman, 42"
 #set xlabel "Trace replayed" offset 1.4, 0.6 font ', 40'
 set ylabel "Amount of updates (%)" offset 1.5, 0 font ', 44'
 
-set key outside top center box lw 2 maxcols 5 maxrows 1 font ',28' width '-2.7'
+set key outside top center box lw 2 maxcols 5 maxrows 1 font ',40' width '-0.5'
 #set key top right box lw 2 font ',30' 
 
-set xtics ('wdev3' 0, 'wdev1' 1, 'rsrch1' 2, 'src21' 3, 'web3' 4, 'hm1' 5, 'web2' 6, 'rsrch2' 7, 'web1' 8, 'proj4' 9, 'proj3' 10, 'mds1' 11, 'wdev2' 12, 'stg1' 13, 'src22' 14, 'wdev0' 15, 'mds0' 16, 'rsrch0' 17, 'usr0' 18, 'src20' 19, 'web0' 20, 'src12' 21, 'ts0' 22, 'stg0' 23, 'usr2' 24, 'src11' 25, 'proj1' 26, 'hm0' 27, 'prn1' 28, 'proj2' 29, 'proj0' 30, 'usr1' 31, 'prn0' 32, 'prxy0' 33, 'src10' 34, 'prxy1' 35) rotate by 50 offset -1.2, -1.5  font ', 30'
+set xtics ('wdev3' 0, 'wdev1' 1, 'rsrch1' 2, 'src21' 3, 'web3' 4, 'hm1' 5, 'web2' 6, 'rsrch2' 7, 'web1' 8, 'proj4' 9, 'proj3' 10, 'mds1' 11, 'wdev2' 12, 'stg1' 13, 'src22' 14, 'wdev0' 15, 'mds0' 16, 'rsrch0' 17) rotate by 50 offset -1.2, -2.0  font ', 40'
 set ytics 20 offset 0.5, 0
 #set grid ytics
 
@@ -32,10 +32,10 @@ set style histogram rows #gap 0.3 # rows
 set boxwidth 0.55 
 set tmargin 1.6
 set rmargin 1.2
-set bmargin 2.0
+set bmargin 3.0
 #set style histogram clustered gap 1
 
-plot "./tsv/msr_dist.tsv"  \
+plot "./tsv/msr_dist_1.tsv"  \
     using 2 title '<4KB' lc rgb "black", \
 ''	using 3 title '4-16KB' lc rgb "#727272", \
 ''	using 4 title '16-128KB' lc rgb "#AFAFAF", \

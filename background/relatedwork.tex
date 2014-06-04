@@ -27,7 +27,7 @@ TotalRecall \cite{bhagwan04} applies replication or erasure coding to different
 files dynamically according to the availability level predicted by the system.
 In addition to the level of redundancy, TotalRecall switches between (1)
 \textit{eager repair}, in which the level of redundancy is maintained by
-immediate repair action after a failure, and \textit{lazy repair}, in which the
+immediate repair action after a failure, and (2) \textit{lazy repair}, in which the
 additional redundancy is temporarily used to delay repair action.
 
 Ursa Minor \cite{abd05} focuses on cluster storage and encodes files of
@@ -109,16 +109,21 @@ cleaning policies to execute in parallel.
 Clustered storage systems, GFS \cite{ghemawat03} and Azure \cite{calder11}, also
 adopt the LFS design for the write-once read-many workload.  The more recent
 work Gecko \cite{shin13} uses a chained-log design to reduce disk I/O contention
-of LFS in RAID storage.  CodFS handles updates differently from LFS, in which it
-performs in-place updates to data and log-based updates to parity chunks.  It
-also allocates reserve space for parity logging to further mitigate disk seeks.
-The above studies (including CodFS) focus on disk backends and commodity
-hardware. 
+of LFS in RAID storage.  
 
-the LFS design is also adopted in other types of emerging storage media, such as
-SSDs \cite{agrawal08} and DRAM storage \cite{ongaro11}.  RAMCloud keeps all data
+The LFS design is also adopted in other types of emerging storage media, such as
+SSDs \cite{agrawal08} and DRAM storage \cite{ongaro11}.  RAMCloud
+\cite{ongaro11} keeps all data
 permanently on DRAM and exploits scalability in recovery by distributing data
-randomly over a large number of nodes.
+randomly over a large number of nodes. 
+
+CodFS handles updates differently from LFS, in which it performs in-place
+updates to data and log-based updates to parity chunks.  It also allocates
+reserve space for parity logging to further mitigate disk seeks (see Chapter
+\ref{chap:codfs}).  On the other
+hand, TWEEN exploits the LFS design to improve write performance and endurance
+of SSD RAID (see Chapter \ref{chap:tween}).
+
 
 %Both LFS and CodFS aim to reducing the amount of time that a disk spends on
 %seeking.  Unlike Zebra, CodFS performs in-place updates to data and only

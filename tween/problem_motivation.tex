@@ -1,9 +1,16 @@
 \section{Partial Writes in SSD RAID}
 \label{sec:partial}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{figs/typical_raid}
+\caption{The SSD RAID layout considered in TWEEN.}
+\label{fig:typicalraid}
+\end{figure}
+
 Small random writes are detrimental to both SSD performance
 \cite{kim08,chen09,min12} and RAID performance \cite{stodolsky93}.  They exhibit
-in many real-world workloads, such as those in online transaction-processing
+in many real-world workloads including those in online transaction-processing
 (OLTP) systems \cite{wong02}, desktops \cite{harter11} and enterprise servers
 \cite{kavalanekar08}. Also, modern databases and critical applications tend to
 call \texttt{fsync/sync} frequently to force {\em synchronous writes}, which
@@ -13,12 +20,13 @@ cause writes to be relatively small and random \cite{harter11}.
 %writes commonly occur in both enterprise \cite{chan14} and desktop
 %\cite{harter11} workloads.  Also, 
 	
-This paper considers two specific types of small random writes,
-namely {\em partial-block writes} and {\em partial-stripe writes}, whose
-request sizes are too small and do not align with the granularities of the SSD
-and RAID operations, respectively.  We collectively call them 
-{\em partial writes}, which incur performance overhead to SSD RAID as
-described below. 
+This section considers two specific types of small random writes that can happen
+in an SSD RAID, namely {\em partial-block writes} and {\em partial-stripe
+    writes}, whose request sizes are too small and do not align with the
+granularities of the SSD and RAID operations, respectively. We collectively call
+them {\em partial writes}, which incur performance overhead to SSD RAID as
+described below.  Figure~\ref{fig:typicalraid} shows the SSD RAID layout that we
+consider in TWEEN.
 
 %\subsection{Partial-Block Writes} 
 
@@ -47,7 +55,8 @@ described below.
 \subsection{Partial-Block Writes}
 
 In the SSD layer, partial-block writes are the writes that update only a
-portion of pages in an SSD block.  Because of out-of-place writes in SSDs, 
+portion of pages in an SSD block.  Because of out-of-place writes in SSDs
+\cite{agrawal08}, 
 partial-block writes eventually cause SSD blocks to
 contain a mix of live and stale pages, leading to internal fragmentation
 \cite{chen09}.  Such internal fragmentation increases the write amplification
@@ -105,13 +114,8 @@ address mapping schemes in FTL \cite{min12}.
 Partial-stripe writes are the writes whose request sizes are smaller than the
 size of a stripe in RAID.  Depending on the write size, RAID handles a 
 partial-stripe write based on one of the two approaches \cite{chen95}: (1)
-\textit{read-modify write}, which reads the old data chunks to be updated and
-all parity chunks of the same stripe, applies the difference between the old
-and new data chunks to the parity chunks, and finally writes the new data and
-parity chunks to devices, and (2) \textit{reconstruct write}, which reads all
-non-updated data chunks in the stripe,  calculates the new parity chunks based
-on the data chunks that are just read and the new data chunks to be written,
-and finally writes all data and parity chunks within the stripe.  Both
+\textit{read-modify write} and (2) \textit{reconstruct write} (see
+Section~\ref{sec:parity_background}).  Both
 reconstruct writes and read-modify writes are inferior in performance as they
 incur extra reads before writes.  Instead, it is more desirable to issue 
 {\em full-stripe writes}, which incur no read by updating all chunks in a stripe 

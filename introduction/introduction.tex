@@ -1,10 +1,12 @@
 \chapter{Introduction}
 \label{sec:introduction}
 
-In this section, we give an overview of our project and highlights our
+In this chapter, we give an overview of our project and highlights our
 contributions.
 
 \section{Overview}
+
+\subsection{CodFS}
 
 % why erasure coding
 Clustered storage systems are known to be susceptible to component failures
@@ -98,9 +100,56 @@ storage systems.
 %servers.  We characterize the update behaviors of the traces that drive our
 %work. 
 
+CodFS is a joint work with Qian Ding, Helen H. W. Chan and Patrick P. C. Lee.
+Yan-kit Li and Chuan Qin also helped implement the early prototype.
+
+\subsection{TWEEN}
+
+%Flash-based solid-state drives (SSDs) offer better I/O performance, shock
+%resistance, and energy efficiency than traditional hard disk
+%drives (HDDs), and have gained significant acceptance in desktop and server
+%environments.  
+%Modern SSDs embed error correction codes (ECCs) in the spare area of each
+%flash page to protect against bit errors \cite{mielke08,grupp09,grupp12}.  
+%However, the bit error rate of an SSD increases with hardware density
+%\cite{lee11,grupp12} and the number of erase cycles that have been issued
+%\cite{mielke08,grupp09}.    
+
+To enhance the reliability of SSD systems beyond ECCs at the flash
+level \cite{mielke08,grupp09,grupp12}, one option is to adopt 
+parity-based RAID (\textit{Redundant Array of Inexpensive Disks})
+\cite{patterson88} (e.g., RAID-4, RAID-5, RAID-6) at the device level. 
+
+Nevertheless, when deploying parity-based SSD RAID (i.e., applying
+parity-based RAID to multiple SSDs), we must pay special attention to small
+random writes.  It is known that small random writes incur high garbage
+collection overhead in SSDs and degrade the performance and endurance of SSDs
+\cite{kim08,chen09,min12}.  Also, to maintain consistency between data and
+parity, each data write triggers parity updates, which not only incur extra
+I/Os that degrade write performance, but also further aggravate garbage
+collection overhead in SSDs.  The primary problem of small random writes is
+that they do not align the granularities of SSD garbage collection and RAID
+encoding operations.  Such small random writes, which we term 
+{\em partial writes}, incur high garbage collection overhead at the SSD level
+and high parity update overhead at the RAID level.  Thus, for performance and
+endurance enhancements of SSD RAID, eliminating partial writes is a critical
+requirement. 
+
+To eliminate partial writes, we propose TWEEN, which batches updates in a
+log-structured file system (LFS) \cite{rosenblum92} until the aggregated write
+size aligns the granularities at both SSD and RAID levels.  Our observation is
+that byte-addressable non-volatile RAM (NVRAM) is an emerging storage substrate
+\cite{jung10,venkataraman11,zhou09,qiu13,lee14}, and can serve as non-volatile
+(persistent) cache for batching partial writes. This motivates us to realize a
+practical and deployable design that combines LFS and NVRAM to eliminate partial
+writes and hence enhance the performance and endurance of SSD RAID. 
+
+TWEEN is a joint work with Qian Ding, Helen H. W. Chan and Patrick P. C. Lee.
+
 \section{Contributions}
 
-We make the following contributions.
+This thesis mainly focuses on the CodFS project. We highlight the following
+contributions.
 
 First, we provide a taxonomy of existing update schemes for
 erasure-coded clustered storage systems.  To this end, we propose a novel
@@ -184,7 +233,7 @@ The rest of the thesis proceeds as follows.
         We present testbed experimental results. 
     \item 
         \textbf{Chapter~\ref{chap:tween}}\\
-        We give an overview of another project TWEEN, which improves write
+        We introduce the goals and design of TWEEN, which improves write
         efficiency and endurance of an SSD RAID using non-volatile cache.
     \item 
         \textbf{Chapter~\ref{chap:conclusions}}\\

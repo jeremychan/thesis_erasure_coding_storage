@@ -1,15 +1,26 @@
 \chapter{Conclusions}
 \label{chap:conclusions}
 
+In this chapter, we summarize our work and address future improvements for both
+CodFS and TWEEN.
+
 \section{Summary}
 
-Our key contribution is the parity logging with reserved space (\PLR) scheme,
+In CodFS, our key contribution is the parity logging with reserved space (\PLR) scheme,
 which keeps parity updates next to the parity chunk to mitigate disk seeks. We
 also propose a workload-aware scheme to predict and adjust the reserved space
-size.  To this end, we build CodFS, an erasure-coded clustered storage system
-that achieves efficient updates and recovery.  We evaluate our CodFS prototype
+size.  We build the CodFS prototype, which is an erasure-coded clustered storage system
+that achieves efficient updates and recovery.  We evaluate CodFS 
 using both synthetic and real-world traces and show that \PLR improves update
 and recovery performance over pure in-place and log-based updates.  
+
+We also propose TWEEN, a user-space middleware application designed to enhance
+the write efficiency and endurance of SSD RAID. TWEEN utilizes the emerging
+NVRAM technology as non-volatile cache and works seamlessly with off-the-shelf
+SSD RAID solutions. It combines the log-structured file system (LFS) and NVRAM
+to batch incoming partial writes and flush them to SSD RAID as full-stripe
+writes. It also exploits workload characteristics to reduce LFS garbage
+collection overhead. 
 
 \section{Future Work}
 

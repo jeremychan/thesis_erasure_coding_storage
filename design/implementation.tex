@@ -36,7 +36,7 @@ chunk using the Linux system call \texttt{fallocate}, which marks the
 allocated blocks as uninitialized. 
 %which does not require writing zero in advance. 
 Shrinking of the reserved space is implemented by invoking \texttt{fallocate}
-with the \texttt{FALLOC\char`_FL\char`_PUNCH\char`_HOLE} flag. Since we
+with the \\ \texttt{FALLOC\char`_FL\char`_PUNCH\char`_HOLE} flag. Since we
 allocate or shrink the reserved space as a multiple of chunk size, we avoid
 creating unusable holes in the file system.
 %and we will evaluate the three strategies in \S\ref{sec:reserve_evaluation}. 

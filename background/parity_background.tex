@@ -1,11 +1,12 @@
 \subsection{Parity Update Approaches}
 \label{sec:parity_background}
 
-Handling updates in a replicated storage is relatively straight-forward. We 
-propagate the each update to all replicas. In addition, techniques including 
+Handling updates in a replicated storage is relatively straight-forward, i.e., we 
+propagate each update to all replicas. In addition, techniques including 
 chain-replication \cite{vanRenesse04} can be used to reduce the update overhead.
 On the other hand, updates in an erasure-coded storage is complicated by the
-need to maintain parity consistency.  
+need to maintain parity consistency, which often introduces network and disk I/O
+overhead.
 In this section, we re-examine existing parity update schemes
 %and evaluate the feasibility of
 %adopting these approaches in erasure-coded clustered storage systems.  We

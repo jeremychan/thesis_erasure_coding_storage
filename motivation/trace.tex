@@ -62,7 +62,8 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
 % Compress caption spacing
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{charts/msr_dist/eps/msr_dist}
+    \includegraphics[width=\linewidth]{charts/msr_dist/eps/msr_dist_1}
+    \includegraphics[width=\linewidth]{charts/msr_dist/eps/msr_dist_2}
     \caption{Distribution of update size in MSR Cambridge traces.}
     \label{fig:msr_dist}
 \end{figure}
@@ -191,8 +192,12 @@ coverage implies the need of a dynamic mechanism to improve update efficiency.
 \section{Summary} 
 
 The above analysis shows that there are workloads in which the majority of
-writes are small updates. This indicates the need to devise a mechanism that
-provides update efficiency, especially in erasure-coded storage where parity
-maintenance may incur significant overhead. Yet, the variation in update
-coverage implies the need of a dynamic mechanism to improve update efficiency as
-caching alone may not be sufficient to achieve a good update performance. 
+writes are small updates and motivates us to build a clustered storage that
+provides update efficiency. As we would like to maintain the storage efficiency
+provided by erasure-coding, we need to devise an update mechanism that mitigates
+parity maintenance overhead. 
+
+Also, the variation in update coverage implies the need of a dynamic mechanism
+to improve update efficiency as caching alone may not be sufficient to achieve a
+good update performance. 
+

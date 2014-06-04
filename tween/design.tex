@@ -16,41 +16,41 @@ RAID.
 %%(i.e., using full-stripe writes only).   
 
 
-\subsection{Goals}
-
-We first present our design goals.
-\vspace{-3pt}
-\begin{itemize} \itemsep=1pt
-\item {\bf Write efficiency and endurance:}  Given the partial-write problem
-(see \S\ref{sec:partial}), TWEEN aims to optimize both
-write and garbage collection flows by eliminating partial-block writes and
-partial-stripe writes at SSD and RAID levels, respectively.  
-See \S\ref{subsec:key} and \S\ref{subsec:architecture}. 
-\item {\bf Metadata efficiency:}  TWEEN maintains metadata to manage the write
-and garbage collection flows.  It is critical that the metadata overhead is
-limited compared to the actual data storage.  See \S\ref{subsec:metadata}.
-\item {\bf Availability:}  TWEEN should preserve device-level fault tolerance
-offered by SSD RAID. Also, the data consistency between TWEEN and the underlying
-SSD RAID should be maintained. See \S\ref{subsec:availability}.  
-% TWEEN can be inconsistent with underlying RAID when write hole happens
-\item {\bf Compatibility:}  When optimizing the write efficiency and endurance
-of SSDs, RAID, or the integration of SSD and RAID, previous studies 
-focus on modifying either SSD or RAID
-controllers.  However, modifying SSD or RAID controllers often requires
-extensive engineering work.  Thus, when we design TWEEN, it should be
-compatible with off-the-shelf SSD RAID configurations.  
-See \S\ref{subsec:implementation}.
-%We note that previous studies also adopt the LFS design to improve RAID
-%performance, they focus on applying logging in the RAID layer. A new RAID
-%implementation requires re-engineering of RAID controllers
-%\cite{menon95,wilkes95}, and this is often infeasible for hardware RAID.  In
-\end{itemize}
+%\subsection{Goals}
+%
+%We first present our design goals.
+%\begin{itemize} 
+%\item {\bf Write efficiency and endurance:}  Given the partial-write problem
+%(see \S\ref{sec:partial}), TWEEN aims to optimize both
+%write and garbage collection flows by eliminating partial-block writes and
+%partial-stripe writes at SSD and RAID levels, respectively.  
+%See \S\ref{subsec:key} and \S\ref{subsec:architecture}. 
+%\item {\bf Metadata efficiency:}  TWEEN maintains metadata to manage the write
+%and garbage collection flows.  It is critical that the metadata overhead is
+%limited compared to the actual data storage.  See \S\ref{subsec:metadata}.
+%\item {\bf Availability:}  TWEEN should preserve device-level fault tolerance
+%offered by SSD RAID. Also, the data consistency between TWEEN and the underlying
+%SSD RAID should be maintained. See \S\ref{subsec:availability}.  
+%% TWEEN can be inconsistent with underlying RAID when write hole happens
+%\item {\bf Compatibility:}  When optimizing the write efficiency and endurance
+%of SSDs, RAID, or the integration of SSD and RAID, previous studies 
+%focus on modifying either SSD or RAID
+%controllers.  However, modifying SSD or RAID controllers often requires
+%extensive engineering work.  Thus, when we design TWEEN, it should be
+%compatible with off-the-shelf SSD RAID configurations.  
+%See \S\ref{subsec:implementation}.
+%%We note that previous studies also adopt the LFS design to improve RAID
+%%performance, they focus on applying logging in the RAID layer. A new RAID
+%%implementation requires re-engineering of RAID controllers
+%%\cite{menon95,wilkes95}, and this is often infeasible for hardware RAID.  In
+%\end{itemize}
 
 
 \subsection{Key Technologies}
 \label{subsec:key}
 
-We elaborate two key technologies of TWEEN to achieve our design goals: (1)
+We elaborate two key technologies of TWEEN which help improve write efficiency
+and endurance of SSD RAID: (1)
 eliminating partial writes and (2) mitigating the LFS garbage collection
 overhead. 
 
@@ -429,183 +429,183 @@ workloads we consider.
 %segment is useless. Thus the RAID knows that the segment's address is free to
 %use.
 
-\subsection{Metadata Management}
-\label{subsec:metadata}
-
-%In this section, we study the NVRAM usage of our design. We use NVRAM to 
-%batch small writes in the logging module and keep all file and 
-%segment metadata in the hotness module. We formulize the usage of 
-%NVRAM and show that our system only requires moderate NVRAM under common settings.
-%The notation in the following discussion is listed in Table~\ref{tab:notation}.
-
-TWEEN maintains a flat namespace and a set of metadata structures to 
-keep track of file information and the locations of updates.  The metadata in
-TWEEN can be classified into two types: (1) file metadata and (2) segment
-metadata. File metadata stores the file identifier, current hotness value, and
-the set of composing segments. Segment metadata stores the segment identity
-and its location.  
-
-The total metadata size is determined by different factors, including the size
-of the SSD RAID volume and the update pattern.  In the following, we conduct
-simple analysis and derive the metadata size under the worst case scenario.
-Our goal is to show that the metadata overhead in TWEEN is small and has
-limited adverse impact on TWEEN performance.  Table~\ref{tab:notation} shows
-the notation used in our analysis. 
-
-%The calculation of NVRAM usage $\mu_{L}$ in the logging module is straightforward. The
-%size of NVRAM is equal to the size of pre-allocated NVRAM buffer for each
-%hotness group, multiplied by the fault-tolerance level ,
-%which can be formulized in \eqref{eqn:nvram_logging}.
-%\begin{equation}
-%    \label{eqn:nvram_logging}
-%    \mu_{L} = N\times(kB)\times m = kmNB
-%\end{equation}
-
-We first compute the total size of segment metadata (denoted by $\sigma_{S}$). 
-We configure each segment to be the same as the RAID stripe size, whose size
-is equal to $K\times B$, where $K$ is the number of data chunks per stripe and
-$B$ is the data chunk size.   Thus, $\sigma_{S}$ is calculated as:
-\begin{equation}
-    \label{eqn:nvram_segment}
-	\sigma_{S} = \frac{T}{K\times B} \times
-	(\mathrm{SZ}(id)+\mathrm{SZ}(addr)) =
-    \frac{16T}{K\times B}
-\end{equation}
+%\subsection{Metadata Management}
+%\label{subsec:metadata}
 %
-where $\frac{T}{K\times B}$ is the maximum number of segments that the system
-can store, and $\mathrm{SZ}(\cdot)$ is a function that returns the variable
-size in bytes.
-
-%The lower bound of $\sigma_{F}$ is obtained by
-%assuming that a single file covers the entire storage space, and that the file
-%is composed of $\frac{T}{KB}$ segments. Then we can
-%express:
+%%In this section, we study the NVRAM usage of our design. We use NVRAM to 
+%%batch small writes in the logging module and keep all file and 
+%%segment metadata in the hotness module. We formulize the usage of 
+%%NVRAM and show that our system only requires moderate NVRAM under common settings.
+%%The notation in the following discussion is listed in Table~\ref{tab:notation}.
+%
+%TWEEN maintains a flat namespace and a set of metadata structures to 
+%keep track of file information and the locations of updates.  The metadata in
+%TWEEN can be classified into two types: (1) file metadata and (2) segment
+%metadata. File metadata stores the file identifier, current hotness value, and
+%the set of composing segments. Segment metadata stores the segment identity
+%and its location.  
+%
+%The total metadata size is determined by different factors, including the size
+%of the SSD RAID volume and the update pattern.  In the following, we conduct
+%simple analysis and derive the metadata size under the worst case scenario.
+%Our goal is to show that the metadata overhead in TWEEN is small and has
+%limited adverse impact on TWEEN performance.  Table~\ref{tab:notation} shows
+%the notation used in our analysis. 
+%
+%%The calculation of NVRAM usage $\mu_{L}$ in the logging module is straightforward. The
+%%size of NVRAM is equal to the size of pre-allocated NVRAM buffer for each
+%%hotness group, multiplied by the fault-tolerance level ,
+%%which can be formulized in \eqref{eqn:nvram_logging}.
+%%\begin{equation}
+%%    \label{eqn:nvram_logging}
+%%    \mu_{L} = N\times(kB)\times m = kmNB
+%%\end{equation}
+%
+%We first compute the total size of segment metadata (denoted by $\sigma_{S}$). 
+%We configure each segment to be the same as the RAID stripe size, whose size
+%is equal to $K\times B$, where $K$ is the number of data chunks per stripe and
+%$B$ is the data chunk size.   Thus, $\sigma_{S}$ is calculated as:
 %\begin{equation}
-%    \label{eqn:nvram_filelow}
+%    \label{eqn:nvram_segment}
+%	\sigma_{S} = \frac{T}{K\times B} \times
+%	(\mathrm{SZ}(id)+\mathrm{SZ}(addr)) =
+%    \frac{16T}{K\times B}
+%\end{equation}
+%%
+%where $\frac{T}{K\times B}$ is the maximum number of segments that the system
+%can store, and $\mathrm{SZ}(\cdot)$ is a function that returns the variable
+%size in bytes.
+%
+%%The lower bound of $\sigma_{F}$ is obtained by
+%%assuming that a single file covers the entire storage space, and that the file
+%%is composed of $\frac{T}{KB}$ segments. Then we can
+%%express:
+%%\begin{equation}
+%%    \label{eqn:nvram_filelow}
+%%    \begin{split}
+%%    \sigma_{F} &\ge \frac{T}{KB} \times \mathrm{SZ}(\varphi_{f}) +
+%%    \mathrm{SZ}(i_{f}) + \mathrm{SZ}(s_{f}) + \mathrm{SZ}(H_{f}) \\
+%%    &= \frac{20T}{KB} + 20 
+%%\end{split}
+%%\end{equation}
+%
+%We next compute the total size of file metadata (denoted by $\sigma_{F}$).
+%Since $\sigma_{F}$ depends on the file size distribution, we compute its upper
+%bound.  This happens when the entire storage space is covered with files whose
+%sizes are the same as the read/write unit size (e.g., an SSD page size).  We
+%obtain $\sigma_{F}$ by summing the size of the file metadata of each file $f$
+%as follows:
+%%
+%\begin{equation}
+%    \label{eqn:nvram_fileup}
 %    \begin{split}
-%    \sigma_{F} &\ge \frac{T}{KB} \times \mathrm{SZ}(\varphi_{f}) +
-%    \mathrm{SZ}(i_{f}) + \mathrm{SZ}(s_{f}) + \mathrm{SZ}(H_{f}) \\
-%    &= \frac{20T}{KB} + 20 
+%    \sigma_{F} &\leq  \sum_{f} (\mathrm{SZ}(\varphi_{f}) +
+%    \mathrm{SZ}(i_{f}) + \mathrm{SZ}(s_{f}) + \mathrm{SZ}(H_{f}))  \\
+%    &= \frac{T}{S} \times( \mathrm{SZ}(\varphi_{f}) +
+%    \mathrm{SZ}(i_{f}) + \mathrm{SZ}(s_{f}) + \mathrm{SZ}(H_{f})) \\
+%    &= \frac{40T}{S}
 %\end{split}
 %\end{equation}
-
-We next compute the total size of file metadata (denoted by $\sigma_{F}$).
-Since $\sigma_{F}$ depends on the file size distribution, we compute its upper
-bound.  This happens when the entire storage space is covered with files whose
-sizes are the same as the read/write unit size (e.g., an SSD page size).  We
-obtain $\sigma_{F}$ by summing the size of the file metadata of each file $f$
-as follows:
 %
-\begin{equation}
-    \label{eqn:nvram_fileup}
-    \begin{split}
-    \sigma_{F} &\leq  \sum_{f} (\mathrm{SZ}(\varphi_{f}) +
-    \mathrm{SZ}(i_{f}) + \mathrm{SZ}(s_{f}) + \mathrm{SZ}(H_{f}))  \\
-    &= \frac{T}{S} \times( \mathrm{SZ}(\varphi_{f}) +
-    \mathrm{SZ}(i_{f}) + \mathrm{SZ}(s_{f}) + \mathrm{SZ}(H_{f})) \\
-    &= \frac{40T}{S}
-\end{split}
-\end{equation}
-
-Finally, we express the upper bound of the total metadata size as a percentage
-$\rho$ of the storage capacity: 
+%Finally, we express the upper bound of the total metadata size as a percentage
+%$\rho$ of the storage capacity: 
+%%
+%\begin{equation}
+%    \label{eqn:nvram_over}
+%    \begin{split}
+%    %\rho &= \frac{\sigma_{S} + \sigma_{F}}{T} \ge \frac{36}{KB} +
+%    %\frac{20}{T}\\
+%    \rho &= \frac{\sigma_{S} + \sigma_{F}}{T} \leq 
+%    \frac{16}{K\times B} + \frac{40}{S}
+%\end{split}
+%\end{equation}
 %
-\begin{equation}
-    \label{eqn:nvram_over}
-    \begin{split}
-    %\rho &= \frac{\sigma_{S} + \sigma_{F}}{T} \ge \frac{36}{KB} +
-    %\frac{20}{T}\\
-    \rho &= \frac{\sigma_{S} + \sigma_{F}}{T} \leq 
-    \frac{16}{K\times B} + \frac{40}{S}
-\end{split}
-\end{equation}
-
-Consider a typical SSD RAID configuration with
-$K=4$, $B=\SI{512}{KB}$, $S=\SI{4}{KB}$, $T=\SI{1}{TB}$, we have $\rho \leq
-0.98\%$, which we believe is reasonable metadata overhead.  The metadata
-overhead can be further reduced by using a larger segment size (or RAID
-stripe size) and read/write unit. 
-
-%, which is a moderate
-%overhead compared to ext4's(\red{need cite}).
-\begin{table}[t]
-    \centering 
-    \small
-    \begin{tabular}{|c|c|l|} 
-        \hline
-        {\bf Notation}  & {\bf Type(bytes)} & {\bf Description}\\ 
-        \hline 
-        \multicolumn{3}{|c|}{Global Settings} \\
-        \hline 
-        $T$ & long(8)  & storage capacity for data chunks\\
-        %$N$  & int(4) & number of hotness groups\\
-        $B$ & int(4) & data chunk size \\
-        $K$ & int(4) & number of data chunks per stripe\\
-        $S$  & int(4) & read/write unit size\\
-%        $m$ & int(4)& fault tolerance level \\
-        \hline 
-        \multicolumn{3}{|c|}{Metadata of File $f$} \\
-        \hline
-        $i_{f}$ & long(8) & file identifier\\
-        $s_{f}$ & long(8) & file size  \\
-        $H_{f}$ & float(4) & hotness value \\
-        $\varphi_{f}$ & tuple(20) & file location, $\tuple{long,long,int}$ \\ 
-        %$L_{f}$ & set & file location set  \\
-        \hline 
-        \multicolumn{3}{|c|}{File Location $\varphi_{f} = \tuple{i_{s},o_{f},o_{s}}$} \\
-        \hline 
-        $i_{s}$ & long(8) & segment identifier\\
-        $o_{f}$ & long(8)& file offset \\
-        $o_{s}$  & int(4)& segment offset\\
-        \hline
-        \multicolumn{3}{|c|}{Metadata of Segment $s$} \\
-        \hline
-        $id$ & long(8) & segment identifier\\
-        $addr$  & long(8) & segment location\\
-        \hline
-    \end{tabular}
-    \caption{Notations for metadata structures.}
-    \label{tab:notation} 
-\end{table}
+%Consider a typical SSD RAID configuration with
+%$K=4$, $B=\SI{512}{KB}$, $S=\SI{4}{KB}$, $T=\SI{1}{TB}$, we have $\rho \leq
+%0.98\%$, which we believe is reasonable metadata overhead.  The metadata
+%overhead can be further reduced by using a larger segment size (or RAID
+%stripe size) and read/write unit. 
+%
+%%, which is a moderate
+%%overhead compared to ext4's(\red{need cite}).
+%\begin{table}[t]
+%    \centering 
+%    \small
+%    \begin{tabular}{|c|c|l|} 
+%        \hline
+%        {\bf Notation}  & {\bf Type(bytes)} & {\bf Description}\\ 
+%        \hline 
+%        \multicolumn{3}{|c|}{Global Settings} \\
+%        \hline 
+%        $T$ & long(8)  & storage capacity for data chunks\\
+%        %$N$  & int(4) & number of hotness groups\\
+%        $B$ & int(4) & data chunk size \\
+%        $K$ & int(4) & number of data chunks per stripe\\
+%        $S$  & int(4) & read/write unit size\\
+%%        $m$ & int(4)& fault tolerance level \\
+%        \hline 
+%        \multicolumn{3}{|c|}{Metadata of File $f$} \\
+%        \hline
+%        $i_{f}$ & long(8) & file identifier\\
+%        $s_{f}$ & long(8) & file size  \\
+%        $H_{f}$ & float(4) & hotness value \\
+%        $\varphi_{f}$ & tuple(20) & file location, $\tuple{long,long,int}$ \\ 
+%        %$L_{f}$ & set & file location set  \\
+%        \hline 
+%        \multicolumn{3}{|c|}{File Location $\varphi_{f} = \tuple{i_{s},o_{f},o_{s}}$} \\
+%        \hline 
+%        $i_{s}$ & long(8) & segment identifier\\
+%        $o_{f}$ & long(8)& file offset \\
+%        $o_{s}$  & int(4)& segment offset\\
+%        \hline
+%        \multicolumn{3}{|c|}{Metadata of Segment $s$} \\
+%        \hline
+%        $id$ & long(8) & segment identifier\\
+%        $addr$  & long(8) & segment location\\
+%        \hline
+%    \end{tabular}
+%    \caption{Notations for metadata structures.}
+%    \label{tab:notation} 
+%\end{table}
 
 
-\subsection{Availability}
-\label{subsec:availability}
-
-% the "write hole" refers to the window of vulnerability
-
-TWEEN keeps writes temporarily in NVRAM before flushing them to SSD RAID. Our design
-defers RAID protection on the data based on the assumption that NVRAM is a
-highly-reliable component in our architecture and keeps data available in the
-presence of transient failures (e.g., power loss) \cite{jung10}. 
-%In addition,
-%it is shown that the degradation of fault tolerance due to deferred parity
-%updates is small in practical RAID systems \cite{savage96}. 
-
-%Thus, we sacrifice small
-%degradation of fault tolerance for significantly improved write performance. 
-
-However, if a power loss occurs in the middle of a full-stripe write and only
-part of a stripe is written to SSD RAID, the parity may become inconsistent with the
-data. If SSD RAID uses the inconsistent parity to
-reconstruct data, it may lead to data corruption (also known as the write hole
-problem \cite{appuswamy10}).
-%even the number of device failures is within the level of fault tolerance
-%provided by the RAID configuration \cite{appuswamy10}. 
-%Researchers refer this phenomenon as the RAID \textit{write hole}
-%\cite{appuswamy10} problem.  Data corruption may happen if a disk failure
-%occurs at this point and the inconsistent parity is used to reconstruct data.
-TWEEN prevents this issue by atomically updating metadata structures 
-only after each write is successfully completed in the underlying SSD RAID.
-%Suppose that an unclean shutdown results in an inconsistent parity in
-%one of the stripes and a subsequent device failure triggers RAID
-%reconstruction, which propagates the error to the data chunks. 
-Therefore, the metadata structures in TWEEN always present a consistent
-version of the file system to read requests. 
-%We note that there is no need to
-%explicitly handle the currently inconsistent stripe in RAID since the write is
-%already discarded and TWEEN will overwrite the location with a new stripe
-%eventually. {\bf PC: double check???}
+%\subsection{Availability}
+%\label{subsec:availability}
+%
+%% the "write hole" refers to the window of vulnerability
+%
+%TWEEN keeps writes temporarily in NVRAM before flushing them to SSD RAID. Our design
+%defers RAID protection on the data based on the assumption that NVRAM is a
+%highly-reliable component in our architecture and keeps data available in the
+%presence of transient failures (e.g., power loss) \cite{jung10}. 
+%%In addition,
+%%it is shown that the degradation of fault tolerance due to deferred parity
+%%updates is small in practical RAID systems \cite{savage96}. 
+%
+%%Thus, we sacrifice small
+%%degradation of fault tolerance for significantly improved write performance. 
+%
+%However, if a power loss occurs in the middle of a full-stripe write and only
+%part of a stripe is written to SSD RAID, the parity may become inconsistent with the
+%data. If SSD RAID uses the inconsistent parity to
+%reconstruct data, it may lead to data corruption (also known as the write hole
+%problem \cite{appuswamy10}).
+%%even the number of device failures is within the level of fault tolerance
+%%provided by the RAID configuration \cite{appuswamy10}. 
+%%Researchers refer this phenomenon as the RAID \textit{write hole}
+%%\cite{appuswamy10} problem.  Data corruption may happen if a disk failure
+%%occurs at this point and the inconsistent parity is used to reconstruct data.
+%TWEEN prevents this issue by atomically updating metadata structures 
+%only after each write is successfully completed in the underlying SSD RAID.
+%%Suppose that an unclean shutdown results in an inconsistent parity in
+%%one of the stripes and a subsequent device failure triggers RAID
+%%reconstruction, which propagates the error to the data chunks. 
+%Therefore, the metadata structures in TWEEN always present a consistent
+%version of the file system to read requests. 
+%%We note that there is no need to
+%%explicitly handle the currently inconsistent stripe in RAID since the write is
+%%already discarded and TWEEN will overwrite the location with a new stripe
+%%eventually. {\bf PC: double check???}
 
 \subsection{Implementation Details}
 \label{subsec:implementation}
