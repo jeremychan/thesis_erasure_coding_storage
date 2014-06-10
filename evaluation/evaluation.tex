@@ -365,7 +365,7 @@ trade-off since recovery itself is a less common operation than random writes.
 Next, we evaluate CodFS by replaying the MSR Cambridge and Harvard NFS traces
 analyzed in \S\ref{sec:trace}.
 
-\subsubsection {MSR Cambridge Traces}
+\subsection {MSR Cambridge Traces}
 %\begin{table}[t] \footnotesize
 %  \centering
 %        \begin{tabular}{ccrrrr}
@@ -433,7 +433,7 @@ that cover the whole working set size of the trace.  Each client then replays
 the trace by writing to the corresponding offset of the preallocated segments.
 We use RDP \cite{corbett04} with $(n,k)=(6,4)$ and 16MB segment size. 
 
-\subsection{Update Performance.} Figure~\ref{fig:msr_update} shows the aggregate
+\subsubsection{Update Performance} Figure~\ref{fig:msr_update} shows the aggregate
 number of writes replayed per second. To perform a stress test, we ignore the
 original timestamps in the traces and replay the operations as fast as possible.
 First, we observe that
@@ -470,7 +470,7 @@ average, \PLR is ${63.1}\%$ faster than \FO.
     \label{fig:msr_recovery}
 \end{figure}
 
-\subsection{Recovery Performance.} Figure~\ref{fig:msr_recovery} shows the
+\subsubsection{Recovery Performance} Figure~\ref{fig:msr_recovery} shows the
 recovery throughput in a two-node failure scenario. We see that in all traces,
 \FL and \PL are slower than \FO and \PLR in recovery.   Also, \PLR outperforms
 \FL and \PL more significantly in traces where there is a large number of

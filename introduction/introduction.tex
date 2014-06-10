@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{sec:introduction}
 
-In this chapter, we give an overview of our project and highlights our
+In this chapter, we give an overview of our project and highlight our
 contributions.
 
 \section{Overview}
@@ -82,6 +82,8 @@ erasure-coded clustered storage system to achieve efficient updates and
 recovery simultaneously.  Our primary goal is to mitigate the network transfer
 and disk I/O overheads, both of which are potential bottlenecks in clustered
 storage systems. 
+We propose and build an erasure-coded clustered storage system {\em CodFS}, 
+which supports efficient updates and recovery. 
 %However, such approach generates disk seeks for both data and parity blocks
 %during update, which does not meet the update efficiency that we require in
 %our inline erasure coding system.
@@ -101,7 +103,8 @@ storage systems.
 %work. 
 
 CodFS is a joint work with Qian Ding, Helen H. W. Chan and Patrick P. C. Lee.
-Yan-kit Li and Chuan Qin also helped implement the early prototype.
+Yan-kit Li and Chuan Qin also helped in the implementation of the early
+prototype.
 
 \subsection{TWEEN}
 
@@ -161,7 +164,7 @@ further propose a workload-aware reserved space management scheme that
 effectively predicts the size of reserved space and reclaims the unused
 reserved space. 
 
-Second, we build an erasure-coded clustered storage system {\em CodFS}, which
+Second, we build an erasure-coded clustered storage system CodFS, which
 targets the common update-dominant workloads and supports efficient updates
 and recovery.   CodFS offloads client-side encoding computations to the
 storage cluster.  
@@ -226,8 +229,8 @@ The rest of the thesis proceeds as follows.
         behavior of real-world traces. 
     \item 
         \textbf{Chapter~\ref{chap:codfs}}\\
-        We propose a new parity update approach. We
-        describe the design and implementation of CodFS. 
+        We propose a new parity update approach and 
+        address the design and implementation of CodFS. 
     \item 
         \textbf{Chapter~\ref{chap:evaluation}}\\ 
         We present testbed experimental results. 

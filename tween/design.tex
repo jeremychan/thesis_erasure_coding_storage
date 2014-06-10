@@ -130,9 +130,9 @@ configured to have the same size as a RAID stripe.  Our default configuration
 of TWEEN uses the \SI{8}{MB} stripe size and four NVRAM buffers, accounting for
 \SI{32}{MB} of NVRAM in total.  Note that the configured NVRAM capacity is
 independent of the total amount of data written to SSD RAID.  In addition,
-TWEEN stores all metadata in NVRAM for simplicity and performance.  We show
-the metadata only occupies a limited amount of NVRAM in the worst case (see
-\S\ref{subsec:metadata}) and under real-world workloads. 
+TWEEN stores all metadata in NVRAM for simplicity and performance. We find 
+the metadata only occupies a limited amount of NVRAM in the worst case and
+under real-world workloads. 
 %although keeping most of the metadata on the SSDs is also feasible by
 %utilizing data structures like B-Tree. Nevertheless, 
 %We pose the issues of further reducing NVRAM capacity requirements as future work.
@@ -299,8 +299,7 @@ $\beta$ and return the query answer.
 
 The hotness value as well as other file system metadata are kept in NVRAM for
 performance and reliability reasons, as both types of data are frequently
-accessed and updated.  We examine the metadata overhead in
-\S\ref{subsec:metadata}.
+accessed and updated.  
 %We minimize the size of metadata by storing only the
 %necessary information including the hotness values, 
 %the file-to-segment mapping tables and on-disk locations of segments.

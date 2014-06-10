@@ -100,15 +100,15 @@ Several studies focus on designing more efficient garbage collection algorithms
 for LFS. Self-tuning LFS \cite{matthews97} exploits workload characteristics to
 improve I/O performance. It speeds up garbage collection in LFS by dynamically
 choosing between two cleaning algorithms, (1) traditional cleaning, which
-combine live data from several partially empty segments to form a full segment
-and (2) hole-plugging, which copy live data to holes found in other segments.
+combines live data from several partially empty segments to form a full segment
+and (2) hole-plugging, which copies live data to holes found in other segments.
 BSD-LFS \cite{seltzer93,seltzer95} simplifies LFS by moving the cleaner from
 kernel space to user space. It also allows multiple cleaners with different
 cleaning policies to execute in parallel.
 
 Clustered storage systems, GFS \cite{ghemawat03} and Azure \cite{calder11}, also
 adopt the LFS design for the write-once read-many workload.  The more recent
-work Gecko \cite{shin13} uses a chained-log design to reduce disk I/O contention
+work Gecko \cite{shin13} uses a chained-log design to reduce disk \mbox{I/O} contention
 of LFS in RAID storage.  
 
 The LFS design is also adopted in other types of emerging storage media, such as

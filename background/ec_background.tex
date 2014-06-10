@@ -6,7 +6,7 @@ It has been known that failures in storage systems are common \cite{ghemawat03}.
 Components in a storage system can fail in numerous ways, including sector
 errors, bit flips and physical failures \cite{plank13}. Erasure coding provides
 redundancy to prevent data loss in an event of component failure. Here, we
-provide the background details of an erasure codes considered in
+provide the background details of the erasure codes considered in
 this work. 
 
 \subsubsection{Replication}
@@ -18,10 +18,10 @@ surviving copy for each byte of data.
 
 Although replication is very simple, it introduces high storage overhead. For
 example, GFS \cite{ghemawat03} by default tolerates up to two simultaneous
-device failures, which requires a storage cost that is $3\times$ the original
+device failures, which requires a storage cost that is $3\times$ that of the original
 size of data.
 
-\subsubsection{Maximum Distance Separable (MDS) Codes}
+\subsubsection{Maximum Distance Separable Codes}
 
 %We refer readers to the tutorial \cite{plank13} 
 %for the essential details of erasure coding in the context of storage systems. 
@@ -44,7 +44,7 @@ segment into $k$ equal-size uncoded chunks called {\em data chunks}, and
 encodes the data chunks to form $n-k$ coded chunks called {\em parity chunks}.
 We assume $n < M$, and have the collection of $n$ data and parity chunks
 distributed across $n$ of the $M$ nodes in the storage cluster.  We consider
-{\em Maximum Distance Separable} erasure coding, i.e., the original segment
+{\em Maximum Distance Separable (MDS)} erasure codes, i.e., the original segment
 can be reconstructed from any $k$ of the $n$ data and parity chunks. 
 
 An MDS code provides optimal fault tolerance for a given storage overhead. For
@@ -54,7 +54,7 @@ sacrificing the level of fault tolerance.
 
 There are many variants of MDS codes, such as, Reed-Soloman (RS) codes
 \cite{reed60}, RDP \cite{corbett04}, EVENODD \cite{plank08} and Liberation
-\cite{blaum95}. These codes differ in the ways in calculating the parity chunks.
+\cite{blaum95}. These codes mainly differ in the ways of calculating the parity chunks.
 
 \subsubsection{Linearity Property of Erasure Codes}
 

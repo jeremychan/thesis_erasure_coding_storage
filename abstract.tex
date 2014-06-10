@@ -1,7 +1,7 @@
 Many modern storage systems adopt erasure coding to provide data availability
 guarantees with low redundancy.  Log-based storage is often used to
 append new data rather than overwrite existing data so as to achieve high
-update efficiency, but introduces significant I/O overhead during recovery due
+update efficiency, but introduces significant \mbox{I/O} overhead during recovery due
 to reassembling updates from data and parity chunks.  We propose parity
 logging with reserved space, which comprises two key design features: (1) it
 takes a hybrid of in-place data updates and log-based parity updates to
@@ -15,8 +15,8 @@ our proposed update scheme achieves high update and recovery
 performance, which cannot be simultaneously achieved by pure in-place or
 log-based update schemes.
 
-In addition to clustered storage, we also study the issue of small random 
-writes in the context of an SSD RAID. In the second part of this thesis, 
+In addition to clustered storage, we also study the issues introduced by small random 
+writes to SSD RAID. In the second part of this thesis, 
 we propose TWEEN, a middleware application that aims toward write efficiency 
 and endurance of SSD RAID.  It comprises two key design features: 
 (1) it combines the log-structured file system (LFS) and byte-addressable 
