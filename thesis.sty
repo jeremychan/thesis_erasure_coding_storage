@@ -28,13 +28,8 @@
 	in \\
 	\programme \\
 
-	\vskip 1cm
-	%\large Supervised by \\
 
-	\vskip 0.5cm
-	%\large {\bf \supervisor}
-
-	\vskip 1cm
+    \vfill
 	\large
 	%\copyright \institution \\
 	\institution \\
@@ -47,7 +42,12 @@
     %Any person(s) intending to use a part or whole of the materials in the thesis
     %in a proposed publication must seek copyright release from the Dean of the
     %Graduate School.
-	\newpage
+
+
+    \newpage
+    \thispagestyle{empty}
+    \mbox{}
+    \newpage
 }
 
 %=======================================================
@@ -67,7 +67,7 @@
 	\input{abstract.tex}
     \newpage
 
-    \chapter*{摘要}
+    %\chapter*{摘要}
 	\input{chinabstract.tex}
 	\newpage
 }

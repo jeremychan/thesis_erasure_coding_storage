@@ -91,8 +91,6 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
 \end{table}%
 
 \begin{table}[t]  \footnotesize
-{
-\renewcommand{\arraystretch}{0.6}
     \begin{tabular}{L{0.2cm}L{1.2cm}L{2.5cm}P{1.8cm}P{1.9cm}P{1.5cm}P{1.6cm}}
     \toprule
           & Volume & Workload Type & No. of Writes & WSS (GB) & 
@@ -136,7 +134,7 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
       & prxy1  & Web proxy   & 58224504  & 13.68    & 36.03  & 98.25 \\
     \bottomrule
     \end{tabular}
-    * selected for evaluation
+    \\ * selected for evaluation
 	\caption{Properties of MSR Cambridge traces: (1) number of writes
 		shows the total number of write requests; (2) working set size refers to
 		the size of unique data accessed in the trace; 
@@ -145,7 +143,6 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
 		at least once; and (4) percentage of update writes refers to the
 		fraction of writes that update existing data.}
 \label{table:msr}
-}
 \end{table}
 
 \section{Update Behavior in Real-world Workload}

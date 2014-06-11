@@ -1,5 +1,6 @@
-\documentclass[12pt]{report}
+\documentclass[12pt,a4paper]{report}
 
+\usepackage[twoside,inner=4cm,outer=2.5cm,top=2.5cm,bottom=2.5cm,includefoot,includehead]{geometry}
 \usepackage{graphicx}
 \usepackage[hyphens]{url}
 \usepackage{amsmath}
@@ -14,6 +15,8 @@
 \usepackage{latexsym}
 \usepackage[dvips]{epsfig}
 \usepackage[hidelinks]{hyperref}
+\usepackage{setspace}
+\onehalfspacing
 % for table
 \usepackage{array}
 \usepackage{ragged2e}
@@ -30,10 +33,12 @@
 \DeclareSIUnit{\GBps}{GB\per\second}
 \DeclareSIUnit{\MBps}{MB\per\second}
 \newcommand{\tuple}[1]{\ensuremath{\left \langle #1 \right \rangle }}
+%=======================================================
 % change section header font size
 \usepackage{titlesec}
 \titleformat*{\subsubsection}{\large\bfseries}
 \titleformat*{\paragraph}{\large\bfseries}
+%=======================================================
 % for chinese
 \usepackage{fontspec} 
 \usepackage{xeCJK} 
@@ -41,16 +46,22 @@
 \XeTeXlinebreakskip = 0pt plus 1pt 
 \setmainfont[Mapping=tex-text]{Times New Roman} % rm
 \setCJKmainfont{MingLiU}  %xelatex 細明體
+%=======================================================
+% for header
+\usepackage{fancyhdr}
+\fancyhf{}
+\fancyhead[LO]{\slshape \rightmark}
+\fancyhead[RE]{\slshape \leftmark}
+\fancyhead[LE,RO]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\pagestyle{fancy}
+%=======================================================
 
 \newcommand\FL{\textsf{FL}\xspace}
 \newcommand\FO{\textsf{FO}\xspace}
 \newcommand\PL{\textsf{PL}\xspace}
 \newcommand\PLR{\textsf{PLR}\xspace}
 \newcommand{\br}[1]{\lbrace #1 \rbrace}
-
-\topmargin	0.0cm
-\textheight    21cm
-%\renewcommand{\arraystretch}{1.2}
 
 \newcommand\red[1]{\textcolor{red}{#1}}
 \newcommand\etal{\emph{et al.}}
@@ -59,8 +70,6 @@
 %=======================================================
 \begin{document}
 
-%set double line spacing
-\linespread{1.6}
 
 %cover page information
 
@@ -124,7 +133,7 @@
 \newpage
 \setcounter{page}{0}
 \pagenumbering{arabic}
-\pagestyle{headings}
+%\pagestyle{headings}
 
 
 %=======================================================
