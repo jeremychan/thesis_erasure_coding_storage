@@ -72,7 +72,7 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
     \label{fig:msr_dist}
 \end{figure}
 
-\begin{table}[t] 
+\begin{table}[t] \footnotesize
     \centering
     \begin{tabular}{rl}
     \toprule
@@ -91,6 +91,7 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
 \end{table}%
 
 \begin{table}[t]  \footnotesize
+    \centering
     \begin{tabular}{L{0.2cm}L{1.2cm}L{2.5cm}P{1.8cm}P{1.9cm}P{1.5cm}P{1.6cm}}
     \toprule
           & Volume & Workload Type & No. of Writes & WSS (GB) & 
@@ -134,7 +135,7 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
       & prxy1  & Web proxy   & 58224504  & 13.68    & 36.03  & 98.25 \\
     \bottomrule
     \end{tabular}
-    \\ * selected for evaluation
+    \\ \centerline{* selected for evaluation}
 	\caption{Properties of MSR Cambridge traces: (1) number of writes
 		shows the total number of write requests; (2) working set size refers to
 		the size of unique data accessed in the trace; 
@@ -152,7 +153,7 @@ analysis for clustered storage systems \cite{abd05,hendricks06}.
 %to drive our work.
 %We study the traces and characterize the following update behaviors. 
 
-\subsection{Updates are Small}  We study the update size, i.e., the number of
+\subsection{Updates Are Small}  We study the update size, i.e., the number of
 bytes accessed by each update.  Figure~\ref{fig:msr_dist} shows the average
 update size ranges of the MSR Cambridge traces.  We see that the updates are
 generally small in size. Although different traces show different
@@ -161,7 +162,7 @@ update size compositions, almost all updates occurring in the traces are smaller
 smaller than 4KB. Similarly, the Harvard NFS traces comprise small updates,
 with average size of only 10.58KB, as shown in Table~\ref{table:harvard}.
 
-\subsection{Updates are Common} Unsurprisingly, updates are common in both
+\subsection{Updates Are Common} Unsurprisingly, updates are common in both
 storage traces.  We analyze the write requests in the traces and classify them
 into two types: {\em first-write}, i.e., the address is first accessed, and
 {\em update}, i.e., the address is re-accessed.  Table~\ref{table:harvard}

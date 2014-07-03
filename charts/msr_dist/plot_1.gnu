@@ -14,12 +14,12 @@ set ytics font "Times-Roman, 42"
 #set rmargin 0
 
 #set xlabel "Trace replayed" offset 1.4, 0.6 font ', 40'
-set ylabel "Amount of updates (%)" offset 1.5, 0 font ', 44'
+set ylabel "Amount of updates (%)" offset 1.5, 0 font ', 48'
 
-set key outside top center box lw 2 maxcols 5 maxrows 1 font ',40' width '-0.5'
+set key outside top center box lw 2 maxcols 5 maxrows 1 font ',45'
 #set key top right box lw 2 font ',30' 
 
-set xtics ('wdev3' 0, 'wdev1' 1, 'rsrch1' 2, 'src21' 3, 'web3' 4, 'hm1' 5, 'web2' 6, 'rsrch2' 7, 'web1' 8, 'proj4' 9, 'proj3' 10, 'mds1' 11, 'wdev2' 12, 'stg1' 13, 'src22' 14, 'wdev0' 15, 'mds0' 16, 'rsrch0' 17) rotate by 50 offset -1.2, -2.0  font ', 40'
+set xtics ('wdev3' 0, 'wdev1' 1, 'rsrch1' 2, 'src21' 3, 'web3' 4, 'hm1' 5, 'web2' 6, 'rsrch2' 7, 'web1' 8, 'proj4' 9, 'proj3' 10, 'mds1' 11, 'wdev2' 12, 'stg1' 13, 'src22' 14, 'wdev0' 15, 'mds0' 16, 'rsrch0' 17) rotate by 50 offset -1.2, -2.4  font ', 45'
 set ytics 20 offset 0.5, 0
 #set grid ytics
 
@@ -30,9 +30,9 @@ set style data histogram
 set style histogram rows #gap 0.3 # rows
 
 set boxwidth 0.55 
-set tmargin 1.6
+set tmargin 2.1
 set rmargin 1.2
-set bmargin 3.0
+set bmargin 3.5
 #set style histogram clustered gap 1
 
 plot "./tsv/msr_dist_1.tsv"  \

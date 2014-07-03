@@ -1,5 +1,5 @@
 \section{TWEEN Design}
-\label{sec:design}
+\label{sec:tween_design}
 
 We propose TWEEN, a middleware application that aims \underline{t}oward
 \underline{w}rite \underline{e}fficiency and \underline{en}durance in SSD
@@ -224,13 +224,14 @@ write and garbage collection flows.  It uses the same read flow as the
 conventional LFS, and we omit the details here. 
 
 \begin{figure}[t]
-    \includegraphics[width=0.99\linewidth]{figs/ssdraid_arch_2}
+    \centering
+    \includegraphics[width=0.7\linewidth]{figs/ssdraid_arch_2}
     %\vspace{-3pt}
     \caption{TWEEN architecture.}
-    \label{fig:architecture}
+    \label{fig:tween_architecture}
 \end{figure}
 
-Figure~\ref{fig:architecture} shows the TWEEN architecture, which consists of
+Figure~\ref{fig:tween_architecture} shows the TWEEN architecture, which consists of
 three major modules. The \textit{hotness module} manages system metadata,
 monitors the update frequency of each file, and assigns a hotness group to
 each write based on the file's hotness value.  The \textit{log module} handles

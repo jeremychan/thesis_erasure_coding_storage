@@ -71,7 +71,6 @@ $T_{read}$), each primary OSD collects $(k-1)$ chunks for each read segment
 from the secondary OSDs. It introduces an additional $(k-1)/k$ times of segment
 traffic.  Thus, $T_{write}$ and $T_{read}$ are given by: 
 
-\vspace{-5pt}
 \begin{equation*}
     T_{write} = \frac{M\times B_{in}}{1+\frac{n-1}{k}} , \hspace{20pt}
     T_{read} = \frac {M\times B_{out}}{1+\frac{k-1}{k}}.
@@ -233,7 +232,7 @@ lengths.  We then take the average over the chunks in all OSDs.
         \begin{tabular}{ccrrrr}
         \toprule
         & & FO    & FL    & PL    & PLR \\ \hline
-        \multirow{2}[0]{*}{Synthetic} & Data  & 0     & 29.41 & 0     & 0 \\ \vspace{-1.1pt}
+        \multirow{2}[0]{*}{Synthetic} & Data  & 0     & 29.41 & 0     & 0 \\ 
               & Parity & 0     & 117.66 & 117.66 & 0 \\ 
         \bottomrule
         \end{tabular}%
@@ -329,18 +328,19 @@ recovery throughput than \FL and \PL.
 
 \begin{figure}[!t]
 \centering
-\begin{tabular}{c@{\ }c}
-\includegraphics[width=0.48\linewidth]{charts/reserve_overhead/eps/reserve_overhead_randw} & 
-\includegraphics[width=0.48\linewidth]{charts/reserve_overhead/eps/reserve_overhead_recover}
-\vspace{-3pt}\\
-\mbox{\small (a) Random write} &
-\mbox{\small (b) Recovery}
-\end{tabular}
-\vspace{-3pt}
+\begin{subfigure}{0.4\linewidth}
+    \includegraphics[width=\linewidth]{charts/reserve_overhead/eps/reserve_overhead_randw}
+    \caption{Random write}
+    \label{subfig:randwrite}
+\end{subfigure}
+\begin{subfigure}{0.4\linewidth}
+    \includegraphics[width=\linewidth]{charts/reserve_overhead/eps/reserve_overhead_recover}
+    \caption{Recovery}
+    \label{subfig:recovery}
+\end{subfigure}
 \caption{Throughput comparison under the same storage
  overhead using Cauchy RS codes with various $(n,k)$.}
 \label{fig:reserve_comparison}
-\vspace{-6pt}
 \end{figure}
 
 \subsection{Summary of Results}
@@ -454,8 +454,7 @@ average, \PLR is ${63.1}\%$ faster than \FO.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{charts/msr_update/eps/msr_update}
-    \vspace{-12pt}
+    \includegraphics[width=0.8\linewidth]{charts/msr_update/eps/msr_update}
     \caption{Number of writes per second replaying the selected MSR
         Cambridge traces under different update schemes.}
     \label{fig:msr_update}
@@ -463,8 +462,7 @@ average, \PLR is ${63.1}\%$ faster than \FO.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{charts/msr_recovery/eps/msr_recovery}
-    \vspace{-12pt}
+    \includegraphics[width=0.8\linewidth]{charts/msr_recovery/eps/msr_recovery}
     \caption{Recovery throughput in a double failure scenario after replaying
         the selected MSR Cambridge traces under different update schemes.}
     \label{fig:msr_recovery}
@@ -594,8 +592,7 @@ is very little impact of merging on the performance in \PLR.
 
 \begin{figure}[t!]
     \centering
-    \includegraphics[width=\linewidth]{charts/harvard_ratio/harvard_ratio.eps}
-    \vspace{-2em}
+    \includegraphics[width=0.8\linewidth]{charts/harvard_ratio/harvard_ratio.eps}
     \caption{Reserved space overhead under different shrink strategies in the Harvard
         trace.}
     \label{fig:harvard_ratio}
@@ -604,8 +601,7 @@ is very little impact of merging on the performance in \PLR.
 
 \begin{figure}[t!]
     \centering
-    \includegraphics[width=\linewidth]{charts/harvard_merge/harvard_merge.eps}
-    \vspace{-2em}
+    \includegraphics[width=0.8\linewidth]{charts/harvard_merge/harvard_merge.eps}
     \caption{Average number of merges per 1000 writes under different shrink
         strategies in the Harvard trace.}
     \label{fig:harvard_merge}

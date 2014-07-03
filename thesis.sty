@@ -55,7 +55,7 @@
 \def\abstractpage{
         \addcontentsline{toc}{chapter}{Abstract}
 
-	%\vspace*{2cm}
+	%\vspace*{2cm1
 	\large \noindent
 	Abstract of thesis entitled: \\
 	\indent \thesistitle \\
@@ -63,7 +63,8 @@
 	for the degree of \degree \\
 	at \institution~in \submitdate
 
-	\vskip 1cm \noindent
+	\vskip 1cm 
+    \noindent
 	\input{abstract.tex}
     \newpage
 
@@ -75,7 +76,6 @@
 %=======================================================
 
 \def\committeepage{%
-        \chapter*{Thesis/Assessment Committee}
         \input{committee.tex}
 	\newpage
 }

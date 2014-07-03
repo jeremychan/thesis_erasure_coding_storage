@@ -67,7 +67,7 @@ where updates are inserted to the end of an append-only log
 significant I/O overhead in erasure-coded storage since parity chunks also
 need to be updated to be consistent with the data changes.  Existing
 clustered storage systems, such as GFS \cite{ghemawat03} and Azure 
-\cite{calder11} adopt log-based updates to reduce I/Os by sequentially
+\cite{calder11} adopt log-based updates to reduce \mbox{I/Os} by sequentially
 appending updates.  On the other hand, log-based updates introduce additional
 disk seeks to the update log during sequential reads.  This in particular
 hurts recovery performance, since recovery makes large sequential reads to the

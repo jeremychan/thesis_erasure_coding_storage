@@ -14,13 +14,13 @@ set ytics font "Times-Roman, 42"
 #set rmargin 0
 
 #set xlabel "Trace replayed" offset 1.4, 0.6 font ', 40'
-set ylabel "Amount of updates (%)" offset 1.5, 0 font ', 44'
+set ylabel "Amount of updates (%)" offset 1.5, 0 font ', 48'
 
 #set key outside top center box lw 2 maxcols 5 maxrows 1 font ',28' width '-2.7'
 #set key top right box lw 2 font ',30' 
 unset key
 
-set xtics ('usr0' 0, 'src20' 1, 'web0' 2, 'src12' 3, 'ts0' 4, 'stg0' 5, 'usr2' 6, 'src11' 7, 'proj1' 8, 'hm0' 9, 'prn1' 10, 'proj2' 11, 'proj0' 12, 'usr1' 13, 'prn0' 14, 'prxy0' 15, 'src10' 16, 'prxy1' 17) rotate by 50 offset -1.2, -2.0  font ', 40'
+set xtics ('usr0' 0, 'src20' 1, 'web0' 2, 'src12' 3, 'ts0' 4, 'stg0' 5, 'usr2' 6, 'src11' 7, 'proj1' 8, 'hm0' 9, 'prn1' 10, 'proj2' 11, 'proj0' 12, 'usr1' 13, 'prn0' 14, 'prxy0' 15, 'src10' 16, 'prxy1' 17) rotate by 50 offset -1.2, -2.0  font ', 45'
 set ytics 20 offset 0.5, 0
 #set grid ytics
 

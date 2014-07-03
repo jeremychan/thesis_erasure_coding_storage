@@ -1,6 +1,7 @@
-\documentclass[12pt,a4paper]{report}
+\documentclass[11pt,a4paper,twoside,openright]{report}
 
-\usepackage[twoside,inner=4cm,outer=2.5cm,top=2.5cm,bottom=2.5cm,includefoot,includehead]{geometry}
+\usepackage{emptypage}
+\usepackage[inner=4cm,outer=2.5cm,top=2.5cm,bottom=2.5cm,includefoot,includehead]{geometry}
 \usepackage{graphicx}
 \usepackage[hyphens]{url}
 \usepackage{amsmath}
@@ -9,14 +10,13 @@
 \usepackage{xspace}
 \usepackage{cite}
 \usepackage{caption,subcaption} % for subfigures
-\usepackage{anyfontsize}
 \usepackage[normalem]{ulem} % for draft
 \usepackage{thesis}
 \usepackage{latexsym}
 \usepackage[dvips]{epsfig}
 \usepackage[hidelinks]{hyperref}
 \usepackage{setspace}
-\onehalfspacing
+\doublespacing
 % for table
 \usepackage{array}
 \usepackage{ragged2e}
@@ -78,22 +78,24 @@
 \degree{Master of Philosophy}
 \programme{Computer Science and Engineering}
 \supervisor{Prof. Patrick P. C. Lee}
-\submitdate{July 2014}
+\submitdate{June 2014}
 \coverpage
 
 
 %=======================================================
 
-\pagenumbering{roman}
+\pagenumbering{gobble}
 
 %=======================================================
 
 %committee
 
 \large
-\committeepage
+%\committeepage
 
 %=======================================================
+
+\pagenumbering{roman}
 
 %abstract
 
@@ -130,7 +132,12 @@
 
 %initialization
 
+%insert the chapters
 \newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
+
 \setcounter{page}{0}
 \pagenumbering{arabic}
 %\pagestyle{headings}
@@ -138,24 +145,29 @@
 
 %=======================================================
 
-%insert the chapters
-
 \input ./introduction/introduction.tex
+\chapterend
 \input ./background/background.tex
+\chapterend
 \input ./motivation/trace.tex
+\chapterend
 \input ./design/parity.tex
 \input ./design/codfs.tex
 \input ./design/implementation.tex
+\chapterend
 \input ./evaluation/evaluation.tex
+\chapterend
 \input ./tween/tween.tex
+\chapterend
 \input ./conclusion/conclusion.tex
+\chapterend
 
 
 %=======================================================
 
 %appendix
 
-\appendix
+%\appendix
 %\input ./proof/proof.tex
 
 
